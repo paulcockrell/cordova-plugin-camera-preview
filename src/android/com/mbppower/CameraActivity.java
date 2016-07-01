@@ -114,6 +114,9 @@ public class CameraActivity extends Fragment {
 	        mainLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 	        mainLayout.addView(mPreview);
 	        mainLayout.setEnabled(false);
+		text = (TextView) view.findViewByID(getResources().getIdentifier("text", "id", appResourcesPackage));
+		text.setText("Hello world");
+		mainLayout.addView(text, 10, 10);
 
 	        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
 
@@ -319,8 +322,6 @@ public class CameraActivity extends Fragment {
         Bitmap ret = Bitmap.createBitmap(w, h, bitmap.getConfig());
         Canvas canvas= new Canvas(ret);
         canvas.drawBitmap(bitmap, -rect.left, -rect.top, null);
-	Paint paint = new Paint();
-	canvas.drawText("Dashcam", 10, 10, paint);
         return ret;
     }
 	

@@ -11,6 +11,7 @@ import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
@@ -318,6 +319,8 @@ public class CameraActivity extends Fragment {
         Bitmap ret = Bitmap.createBitmap(w, h, bitmap.getConfig());
         Canvas canvas= new Canvas(ret);
         canvas.drawBitmap(bitmap, -rect.left, -rect.top, null);
+	Paint paint = new Paint();
+	canvas.drawText("Dashcam", 10.0, 10.0, paint);
         return ret;
     }
 	

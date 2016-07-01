@@ -51,8 +51,9 @@ public class CameraActivity extends Fragment {
 	private static final String TAG = "CameraActivity";
 	public FrameLayout mainLayout;
 	public FrameLayout frameContainerLayout;
+	public TextView text;
 
-    private Preview mPreview;
+        private Preview mPreview;
 	private boolean canTakePicture = true;
 
 	private View view;
@@ -115,7 +116,7 @@ public class CameraActivity extends Fragment {
 	        mainLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 	        mainLayout.addView(mPreview);
 	        mainLayout.setEnabled(false);
-		text = (TextView) view.findViewById(getResources().getIdentifier("text", "id", appResourcesPackage));
+		text = (TextView) view.findViewById(getResources().getIdentifier("metrics_text", "id", appResourcesPackage));
 		text.setText("Hello world");
 		mainLayout.addView(text, 10, 10);
 

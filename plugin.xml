@@ -11,6 +11,7 @@
   <repo>https://github.com/cordova-plugin-camera-preview/cordova-plugin-camera-preview.git</repo>
   <issue>https://github.com/cordova-plugin-camera-preview/cordova-plugin-camera-preview/issues</issue>
 
+  <dependency id="cordova-plugin-compat" version="^1.0.0" />
   <js-module src="www/CameraPreview.js" name="CameraPreview">
     <clobbers target="cordova.plugins.camerapreview" />
   </js-module>

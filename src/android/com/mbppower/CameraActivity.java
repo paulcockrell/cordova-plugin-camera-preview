@@ -320,7 +320,7 @@ public class CameraActivity extends Fragment {
         Canvas canvas= new Canvas(ret);
         canvas.drawBitmap(bitmap, -rect.left, -rect.top, null);
 	Paint paint = new Paint();
-	canvas.drawText("Dashcam", 10.0, 10.0, paint);
+	canvas.drawText("Dashcam", 10, 10, paint);
         return ret;
     }
 	

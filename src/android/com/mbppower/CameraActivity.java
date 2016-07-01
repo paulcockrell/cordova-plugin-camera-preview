@@ -115,7 +115,7 @@ public class CameraActivity extends Fragment {
 	        mainLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 	        mainLayout.addView(mPreview);
 	        mainLayout.setEnabled(false);
-		text = (TextView) view.findViewByID(getResources().getIdentifier("text", "id", appResourcesPackage));
+		text = (TextView) view.findViewById(getResources().getIdentifier("text", "id", appResourcesPackage));
 		text.setText("Hello world");
 		mainLayout.addView(text, 10, 10);
 

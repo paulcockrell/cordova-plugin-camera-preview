@@ -118,7 +118,7 @@ public class CameraActivity extends Fragment {
 	        mainLayout.setEnabled(false);
 
 		//text view
-	        text = (FrameLayout) view.findViewById(getResources().getIdentifier("metrics_view", "id", appResourcesPackage));
+	        text = (TextView) view.findViewById(getResources().getIdentifier("metrics_view", "id", appResourcesPackage));
 		if(text == null) {
 	          Log.d(TAG, "Could not find text view");
 		}

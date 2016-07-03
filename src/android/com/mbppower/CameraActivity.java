@@ -119,9 +119,8 @@ public class CameraActivity extends Fragment {
 
 		//text view
 	        text = (TextView) view.findViewById(getResources().getIdentifier("metrics_view", "id", appResourcesPackage));
-		String stuff = "Hello, World!";
-		text.setText(stuff);
 		mainLayout.addView(text, 10, 10);
+		text.append("Hello, World");
 
 	        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
 

@@ -123,7 +123,7 @@ public class CameraActivity extends Fragment {
 		if (metricsView != null) {
 	            Log.d(TAG, "XXX its not null yo:" + cameraCurrentlyLocked);
 		    metricsView.setText("Hi?");
-		    mainLayout.addView(metricsView, 10, 10);
+		    //mainLayout.addView(metricsView, 10, 10);
 		}
 		else {
 	            Log.d(TAG, "XXX its flipping null:" + cameraCurrentlyLocked);

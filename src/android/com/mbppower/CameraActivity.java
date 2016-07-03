@@ -74,35 +74,36 @@ public class CameraActivity extends Fragment {
 	public int y;
 
 	public void setEventListener(CameraPreviewListener listener){
-		eventListener = listener;
+            eventListener = listener;
 	}
 
 	private String appResourcesPackage;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-	    appResourcesPackage = getActivity().getPackageName();
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            appResourcesPackage = getActivity().getPackageName();
 
-	    // Inflate the layout for this fragment
-	    view = inflater.inflate(getResources().getIdentifier("camera_activity", "layout", appResourcesPackage), container, false);
-	    createCameraPreview();
-	    return view;
-    }
+            // Inflate the layout for this fragment
+            view = inflater.inflate(getResources().getIdentifier("camera_activity", "layout", appResourcesPackage), container, false);
+            createCameraPreview();
+            return view;
+        }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-	public void setRect(int x, int y, int width, int height){
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+            super.onCreate(savedInstanceState);
+        }
+    
+	public void setRect(int x, int y, int width, int height) {
+	    this.x = x;
+	    this.y = y;
+	    this.width = width;
+	    this.height = height;
 	}
 
-	private void createCameraPreview(){
-        if(mPreview == null) {
-            setDefaultCameraId();
+	private void createCameraPreview() {
+            if(mPreview == null) {
+                setDefaultCameraId();
 
 	        //set box position and size
 	        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, height);

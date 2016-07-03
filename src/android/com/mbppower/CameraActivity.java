@@ -51,7 +51,7 @@ public class CameraActivity extends Fragment {
 	private static final String TAG = "CameraActivity";
 	public FrameLayout mainLayout;
 	public FrameLayout frameContainerLayout;
-	public TextView text;
+	public TextView metricsView;
 
         private Preview mPreview;
 	private boolean canTakePicture = true;
@@ -118,8 +118,9 @@ public class CameraActivity extends Fragment {
 	        mainLayout.setEnabled(false);
 
 		//text view
-	        text = (TextView) view.findViewById(getResources().getIdentifier("metrics_view", "id", appResourcesPackage));
-		mainLayout.addView(text, 10, 10);
+	        metricsView = (TextView) view.findViewById(getResources().getIdentifier("metrics_view", "id", appResourcesPackage));
+		mainLayout.addView(metricsView, 10, 10);
+		metricsView.setText("Hi?");
 
 	        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
 

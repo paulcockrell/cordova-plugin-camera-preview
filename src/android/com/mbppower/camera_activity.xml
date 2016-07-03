@@ -22,13 +22,14 @@
                 android:id="@+id/video_view"
                 android:scaleType="fitXY"
                 android:layout_gravity="top">
-		<TextView
-		    android:id="@+id/metrics_text"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_gravity="center|bottom"
-		    android:text="Some text..." />
-	    </FrameLayout>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/metrics_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:text="Some text..." />
 
             <ImageView
                 android:layout_width="match_parent"

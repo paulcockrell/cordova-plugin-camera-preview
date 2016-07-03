@@ -120,14 +120,7 @@ public class CameraActivity extends Fragment {
 
 		//text view
 	        metricsView = (TextView) view.findViewById(getResources().getIdentifier("metrics_text", "id", appResourcesPackage));
-		if (metricsView != null) {
-	            Log.d(TAG, "XXX its not null yo:" + cameraCurrentlyLocked);
-		    metricsView.setText("Hi?");
-		    //mainLayout.addView(metricsView, 10, 10);
-		}
-		else {
-	            Log.d(TAG, "XXX its flipping null:" + cameraCurrentlyLocked);
-		}
+		metricsView.setText("Hi?");
 
 	        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
 
@@ -289,7 +282,7 @@ public class CameraActivity extends Fragment {
         if (numberOfCameras == 1) {
             //There is only one camera available
         }
-		Log.d(TAG, "XXX numberOfCameras: " + numberOfCameras);
+		Log.d(TAG, "numberOfCameras: " + numberOfCameras);
 
 		// OK, we have multiple cameras.
 		// Release this camera -> cameraCurrentlyLocked

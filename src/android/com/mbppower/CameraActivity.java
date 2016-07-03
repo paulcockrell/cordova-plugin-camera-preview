@@ -119,8 +119,10 @@ public class CameraActivity extends Fragment {
 
 		//text view
 	        metricsView = (TextView) view.findViewById(getResources().getIdentifier("metrics_view", "id", appResourcesPackage));
-		metricsView.setText("Hi?");
-		mainLayout.addView(metricsView, 10, 10);
+		if (metricsView != null) {
+		    metricsView.setText("Hi?");
+		    mainLayout.addView(metricsView, 10, 10);
+		}
 
 	        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
 

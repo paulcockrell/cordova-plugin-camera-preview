@@ -116,9 +116,16 @@ public class CameraActivity extends Fragment {
 	        mainLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 	        mainLayout.addView(mPreview);
 	        mainLayout.setEnabled(false);
-		text = (TextView) view.findViewById(getResources().getIdentifier("metrics_text", "id", appResourcesPackage));
-		text.setText("Hello world");
-		mainLayout.addView(text, 10, 10);
+
+		//text view
+	        text = (FrameLayout) view.findViewById(getResources().getIdentifier("metrics_view", "id", appResourcesPackage));
+		if(text == null) {
+	          Log.d(TAG, "Could not find text view");
+		}
+		else {
+		  text.setText("Hello world");
+		  mainLayout.addView(text, 10, 10);
+		}
 
 	        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
 

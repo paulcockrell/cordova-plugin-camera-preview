@@ -32,6 +32,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
     private final String takePictureAction = "takePicture";
     private final String showCameraAction = "showCamera";
     private final String hideCameraAction = "hideCamera";
+    private final String setTextAction = "setText";
 
     public static final int START_CAMERA_SEC = 0;
     public static final int PERMISSION_DENIED_ERROR = 20;
@@ -78,6 +79,9 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
         }
         else if (switchCameraAction.equals(action)){
             return switchCamera(args, callbackContext);
+        }
+        else if (setTextAction.equals(action)){
+            return setText(args, callbackContext);
         }
 
         return false;
@@ -190,12 +194,13 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
                 }
             }
         });
+
         return true;
     }
+    
     private boolean takePicture(final JSONArray args, CallbackContext callbackContext) {
-        if(fragment == null){
-            return false;
-        }
+        if (fragment == null) return false;
+
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK);
         pluginResult.setKeepCallback(true);
         callbackContext.sendPluginResult(pluginResult);
@@ -208,6 +213,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
             e.printStackTrace();
             return false;
         }
+
         return true;
     }
 
@@ -220,46 +226,46 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
     }
 
     private boolean setColorEffect(final JSONArray args, CallbackContext callbackContext) {
-      if(fragment == null){
-        return false;
-      }
+        if (fragment == null) {
+            return false;
+        }
 
-    Camera camera = fragment.getCamera();
-    if (camera == null){
-      return true;
-    }
+        Camera camera = fragment.getCamera();
+        if (camera == null){
+            return true;
+        }
 
-    Camera.Parameters params = camera.getParameters();
+        Camera.Parameters params = camera.getParameters();
 
-    try {
-      String effect = args.getString(0);
+        try {
+            String effect = args.getString(0);
 
-      if (effect.equals("aqua")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_AQUA);
-      } else if (effect.equals("blackboard")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_BLACKBOARD);
-      } else if (effect.equals("mono")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_MONO);
-      } else if (effect.equals("negative")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_NEGATIVE);
-      } else if (effect.equals("none")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_NONE);
-      } else if (effect.equals("posterize")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_POSTERIZE);
-      } else if (effect.equals("sepia")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_SEPIA);
-      } else if (effect.equals("solarize")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_SOLARIZE);
-      } else if (effect.equals("whiteboard")) {
-        params.setColorEffect(Camera.Parameters.EFFECT_WHITEBOARD);
-      }
+            if (effect.equals("aqua")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_AQUA);
+            } else if (effect.equals("blackboard")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_BLACKBOARD);
+            } else if (effect.equals("mono")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_MONO);
+            } else if (effect.equals("negative")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_NEGATIVE);
+            } else if (effect.equals("none")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_NONE);
+            } else if (effect.equals("posterize")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_POSTERIZE);
+            } else if (effect.equals("sepia")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_SEPIA);
+            } else if (effect.equals("solarize")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_SOLARIZE);
+            } else if (effect.equals("whiteboard")) {
+                params.setColorEffect(Camera.Parameters.EFFECT_WHITEBOARD);
+            }
 
-      fragment.setCameraParameters(params);
-        return true;
-    } catch(Exception e) {
-      e.printStackTrace();
-      return false;
-    }
+            fragment.setCameraParameters(params);
+            return true;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean stopCamera(final JSONArray args, CallbackContext callbackContext) {
@@ -288,6 +294,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
 
         return true;
     }
+
     private boolean hideCamera(final JSONArray args, CallbackContext callbackContext) {
         if(fragment == null) {
             return false;
@@ -300,10 +307,12 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
 
         return true;
     }
+
     private boolean switchCamera(final JSONArray args, CallbackContext callbackContext) {
-        if(fragment == null){
+        if (fragment == null) {
             return false;
         }
+
         fragment.switchCamera();
         return true;
     }
@@ -311,6 +320,25 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
     private boolean setOnPictureTakenHandler(JSONArray args, CallbackContext callbackContext) {
         Log.d(TAG, "setOnPictureTakenHandler");
         takePictureCallbackContext = callbackContext;
+        return true;
+    }
+
+    private boolean setText(final JSONArray args, CallbackContext callbackContext) {
+        Log.d(TAG, "setTextHandler XXX");
+        if (fragment == null) return false;
+
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK);
+        pluginResult.setKeepCallback(true);
+        callbackContext.sendPluginResult(pluginResult);
+        try {
+            String text = args.getString(0);
+            fragment.setText(text);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
         return true;
     }
 }

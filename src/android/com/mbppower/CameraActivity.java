@@ -401,6 +401,13 @@ public class CameraActivity extends Fragment {
         }
     }
 
+    public void setText(final string text) {
+        Log.d(TAG, "XXX Setting text to " + text);
+        if (metricsView != null) {
+            metricsView.setText(text);
+        }
+    }
+
     private void generatePictureFromView(final Bitmap originalPicture, final Bitmap picture) {
         final FrameLayout cameraLoader = (FrameLayout)view.findViewById(getResources().getIdentifier("camera_loader", "id", appResourcesPackage));
         cameraLoader.setVisibility(View.VISIBLE);
@@ -686,6 +693,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
             mCamera.stopPreview();
         }
     }
+
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
         double targetRatio = (double) w / h;

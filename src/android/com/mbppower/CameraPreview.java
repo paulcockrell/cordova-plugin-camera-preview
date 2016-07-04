@@ -327,17 +327,8 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
         Log.d(TAG, "setTextHandler XXX");
         if (fragment == null) return false;
 
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK);
-        pluginResult.setKeepCallback(true);
-        callbackContext.sendPluginResult(pluginResult);
-        try {
-            String text = args.getString(0);
-            fragment.setText(text);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return false;
-        }
+        String text = args.getString(0);
+        fragment.setText(text);
 
         return true;
     }

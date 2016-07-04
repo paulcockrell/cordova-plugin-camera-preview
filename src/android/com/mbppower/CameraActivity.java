@@ -43,193 +43,188 @@ import java.util.List;
 
 public class CameraActivity extends Fragment {
 
-	public interface CameraPreviewListener {
-		public void onPictureTaken(String originalPicturePath, String previewPicturePath);
-	}
+    public interface CameraPreviewListener {
+        public void onPictureTaken(String originalPicturePath, String previewPicturePath);
+    }
 
-	private CameraPreviewListener eventListener;
-	private static final String TAG = "CameraActivity";
-	public FrameLayout mainLayout;
-	public FrameLayout frameContainerLayout;
-	public TextView metricsView;
+    private CameraPreviewListener eventListener;
+    private static final String TAG = "CameraActivity";
+    public FrameLayout mainLayout;
+    public FrameLayout frameContainerLayout;
+    public TextView metricsView;
 
-        private Preview mPreview;
-	private boolean canTakePicture = true;
+    private Preview mPreview;
+    private boolean canTakePicture = true;
 
-	private View view;
-	private Camera.Parameters cameraParameters;
-	private Camera mCamera;
-	private int numberOfCameras;
-	private int cameraCurrentlyLocked;
+    private View view;
+    private Camera.Parameters cameraParameters;
+    private Camera mCamera;
+    private int numberOfCameras;
+    private int cameraCurrentlyLocked;
 
     // The first rear facing camera
     private int defaultCameraId;
-	public String defaultCamera;
-	public boolean tapToTakePicture;
-	public boolean dragEnabled;
+    public String defaultCamera;
+    public boolean tapToTakePicture;
+    public boolean dragEnabled;
 
-	public int width;
-	public int height;
-	public int x;
-	public int y;
+    public int width;
+    public int height;
+    public int x;
+    public int y;
 
-	public void setEventListener(CameraPreviewListener listener){
-            eventListener = listener;
-	}
+    public void setEventListener(CameraPreviewListener listener){
+        eventListener = listener;
+    }
 
-	private String appResourcesPackage;
+    private String appResourcesPackage;
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            appResourcesPackage = getActivity().getPackageName();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        appResourcesPackage = getActivity().getPackageName();
 
-            // Inflate the layout for this fragment
-            view = inflater.inflate(getResources().getIdentifier("camera_activity", "layout", appResourcesPackage), container, false);
-            createCameraPreview();
-            return view;
-        }
+        // Inflate the layout for this fragment
+        view = inflater.inflate(getResources().getIdentifier("camera_activity", "layout", appResourcesPackage), container, false);
+        createCameraPreview();
+        return view;
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-        }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
     
-	public void setRect(int x, int y, int width, int height) {
-	    this.x = x;
-	    this.y = y;
-	    this.width = width;
-	    this.height = height;
-	}
+    public void setRect(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 
-	private void createCameraPreview() {
-            if(mPreview == null) {
-                setDefaultCameraId();
+    private void createCameraPreview() {
+        if (mPreview == null) {
+            setDefaultCameraId();
 
-	        //set box position and size
-	        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, height);
-	        layoutParams.setMargins(x, y, 0, 0);
-	        frameContainerLayout = (FrameLayout) view.findViewById(getResources().getIdentifier("frame_container", "id", appResourcesPackage));
-	        frameContainerLayout.setLayoutParams(layoutParams);
+            //set box position and size
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, height);
+            layoutParams.setMargins(x, y, 0, 0);
+            frameContainerLayout = (FrameLayout) view.findViewById(getResources().getIdentifier("frame_container", "id", appResourcesPackage));
+            frameContainerLayout.setLayoutParams(layoutParams);
 
-	        //video view
-	        mPreview = new Preview(getActivity());
-	        mainLayout = (FrameLayout) view.findViewById(getResources().getIdentifier("video_view", "id", appResourcesPackage));
-	        mainLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-	        mainLayout.addView(mPreview);
-	        mainLayout.setEnabled(false);
+            //video view
+            mPreview = new Preview(getActivity());
+            mainLayout = (FrameLayout) view.findViewById(getResources().getIdentifier("video_view", "id", appResourcesPackage));
+            mainLayout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+            mainLayout.addView(mPreview);
+            mainLayout.setEnabled(false);
 
-		//text view
-	        metricsView = (TextView) view.findViewById(getResources().getIdentifier("metrics_text", "id", appResourcesPackage));
-		metricsView.setText("Hi?");
+            //text view
+            metricsView = (TextView) view.findViewById(getResources().getIdentifier("metrics_text", "id", appResourcesPackage));
+            if (metricsView != null) {
+                metricsView.setText("Camera initialized...");
+            }
 
-	        final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
+            final GestureDetector gestureDetector = new GestureDetector(getActivity().getApplicationContext(), new TapGestureDetector());
 
-	        getActivity().runOnUiThread(new Runnable() {
-		        @Override
-		        public void run() {
-			        frameContainerLayout.setClickable(true);
-			        frameContainerLayout.setOnTouchListener(new View.OnTouchListener() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    frameContainerLayout.setClickable(true);
+                    frameContainerLayout.setOnTouchListener(new View.OnTouchListener() {
+                        private int mLastTouchX;
+                        private int mLastTouchY;
+                        private int mPosX = 0;
+                        private int mPosY = 0;
 
-				        private int mLastTouchX;
-				        private int mLastTouchY;
-				        private int mPosX = 0;
-				        private int mPosY = 0;
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frameContainerLayout.getLayoutParams();
+                            boolean isSingleTapTouch = gestureDetector.onTouchEvent(event);
+                            if (event.getAction() != MotionEvent.ACTION_MOVE && isSingleTapTouch) {
+                                if (tapToTakePicture) {
+                                    takePicture(0, 0);
+                                }
+                                return true;
+                            }
+                            else {
+                                if (dragEnabled) {
+                                    int x;
+                                    int y;
 
-				        @Override
-				        public boolean onTouch(View v, MotionEvent event) {
-					        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frameContainerLayout.getLayoutParams();
+                                    switch (event.getAction()) {
+                                        case MotionEvent.ACTION_DOWN:
+                                            if(mLastTouchX == 0 || mLastTouchY == 0) {
+                                                mLastTouchX = (int)event.getRawX() - layoutParams.leftMargin;
+                                                mLastTouchY = (int)event.getRawY() - layoutParams.topMargin;
+                                            }
+                                            else{
+                                                mLastTouchX = (int)event.getRawX();
+                                                mLastTouchY = (int)event.getRawY();
+                                            }
+                                            break;
+                                        case MotionEvent.ACTION_MOVE:
+                                            x = (int) event.getRawX();
+                                            y = (int) event.getRawY();
 
+                                            final float dx = x - mLastTouchX;
+                                            final float dy = y - mLastTouchY;
 
-					        boolean isSingleTapTouch = gestureDetector.onTouchEvent(event);
-					        if (event.getAction() != MotionEvent.ACTION_MOVE && isSingleTapTouch) {
-						        if (tapToTakePicture) {
-							        takePicture(0, 0);
-						        }
-						        return true;
-					        }
-					        else {
-						        if (dragEnabled) {
-							        int x;
-							        int y;
+                                            mPosX += dx;
+                                            mPosY += dy;
 
-							        switch (event.getAction()) {
-								        case MotionEvent.ACTION_DOWN:
-											if(mLastTouchX == 0 || mLastTouchY == 0) {
-												mLastTouchX = (int)event.getRawX() - layoutParams.leftMargin;
-												mLastTouchY = (int)event.getRawY() - layoutParams.topMargin;
-											}
-									        else{
-												mLastTouchX = (int)event.getRawX();
-												mLastTouchY = (int)event.getRawY();
-											}
-									        break;
-								        case MotionEvent.ACTION_MOVE:
+                                            layoutParams.leftMargin = mPosX;
+                                            layoutParams.topMargin = mPosY;
 
-									        x = (int) event.getRawX();
-									        y = (int) event.getRawY();
+                                            frameContainerLayout.setLayoutParams(layoutParams);
 
-									        final float dx = x - mLastTouchX;
-									        final float dy = y - mLastTouchY;
+                                            // Remember this touch position for the next move event
+                                            mLastTouchX = x;
+                                            mLastTouchY = y;
 
-									        mPosX += dx;
-									        mPosY += dy;
-
-									        layoutParams.leftMargin = mPosX;
-									        layoutParams.topMargin = mPosY;
-
-									        frameContainerLayout.setLayoutParams(layoutParams);
-
-									        // Remember this touch position for the next move event
-									        mLastTouchX = x;
-									        mLastTouchY = y;
-
-									        break;
-								        default:
-									        break;
-							        }
-						        }
-					        }
-					        return true;
-				        }
-			        });
-		        }
-	        });
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                            return true;
+                        }
+                    });
+                }
+            });
         }
     }
-	
-    private void setDefaultCameraId(){
-		
-		// Find the total number of cameras available
+    
+    private void setDefaultCameraId() {
+        // Find the total number of cameras available
         numberOfCameras = Camera.getNumberOfCameras();
-		
-		int camId = defaultCamera.equals("front") ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK;
+        int camId = defaultCamera.equals("front") ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK;
 
-		// Find the ID of the default camera
-		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-		for (int i = 0; i < numberOfCameras; i++) {
-			Camera.getCameraInfo(i, cameraInfo);
-			if (cameraInfo.facing == camId) {
-				defaultCameraId = camId;
-				break;
-			}
-		}
-	}
-	
+        // Find the ID of the default camera
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.getCameraInfo(i, cameraInfo);
+            if (cameraInfo.facing == camId) {
+                defaultCameraId = camId;
+                break;
+            }
+        }
+    }
+    
     @Override
     public void onResume() {
         super.onResume();
-	
-	// Sets the Default Camera as the current one (initializes mCamera instance)
-       	setCurrentCamera(defaultCameraId);
-        
-        if(mPreview.mPreviewSize == null){
-		mPreview.setCamera(mCamera, cameraCurrentlyLocked);
-	} else {
-		mPreview.switchCamera(mCamera, cameraCurrentlyLocked);
-		mCamera.startPreview();
-	}
+    
+        // Sets the Default Camera as the current one (initializes mCamera instance)
+        setCurrentCamera(defaultCameraId);
+        if (mPreview.mPreviewSize == null) {
+            mPreview.setCamera(mCamera, cameraCurrentlyLocked);
+        } else {
+            mPreview.switchCamera(mCamera, cameraCurrentlyLocked);
+            mCamera.startPreview();
+        }
 
-	    Log.d(TAG, "cameraCurrentlyLocked:" + cameraCurrentlyLocked);
+        Log.d(TAG, "cameraCurrentlyLocked:" + cameraCurrentlyLocked);
 
         final FrameLayout frameContainerLayout = (FrameLayout) view.findViewById(getResources().getIdentifier("frame_container", "id", appResourcesPackage));
         ViewTreeObserver viewTreeObserver = frameContainerLayout.getViewTreeObserver();
@@ -250,9 +245,8 @@ public class CameraActivity extends Fragment {
     }
     
     // Sets the current camera - allows to set cameraParameters from a single place (e.g. can be used to set AutoFocus and Autoflash)
-    private void setCurrentCamera(int cameraId){
-    	 mCamera = Camera.open(cameraId);
-
+    private void setCurrentCamera(int cameraId) {
+        mCamera = Camera.open(cameraId);
         if (cameraParameters != null) {
           mCamera.setParameters(cameraParameters);
         }
@@ -282,38 +276,38 @@ public class CameraActivity extends Fragment {
         if (numberOfCameras == 1) {
             //There is only one camera available
         }
-		Log.d(TAG, "numberOfCameras: " + numberOfCameras);
+        Log.d(TAG, "numberOfCameras: " + numberOfCameras);
 
-		// OK, we have multiple cameras.
-		// Release this camera -> cameraCurrentlyLocked
-		if (mCamera != null) {
-			mCamera.stopPreview();
-			mPreview.setCamera(null, -1);
-			mCamera.release();
-			mCamera = null;
-		}
+        // OK, we have multiple cameras.
+        // Release this camera -> cameraCurrentlyLocked
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mPreview.setCamera(null, -1);
+            mCamera.release();
+            mCamera = null;
+        }
 
-		// Acquire the next camera and request Preview to reconfigure
-		// parameters.
-		int nextCameraId = (cameraCurrentlyLocked + 1) % numberOfCameras;
-		
-		// Set the next camera as the current one and apply the cameraParameters
-		setCurrentCamera(nextCameraId);
-		
-		mPreview.switchCamera(mCamera, cameraCurrentlyLocked);
+        // Acquire the next camera and request Preview to reconfigure
+        // parameters.
+        int nextCameraId = (cameraCurrentlyLocked + 1) % numberOfCameras;
+        
+        // Set the next camera as the current one and apply the cameraParameters
+        setCurrentCamera(nextCameraId);
+        
+        mPreview.switchCamera(mCamera, cameraCurrentlyLocked);
 
-	    Log.d(TAG, "cameraCurrentlyLocked new: " + cameraCurrentlyLocked);
+        Log.d(TAG, "cameraCurrentlyLocked new: " + cameraCurrentlyLocked);
 
-		// Start the preview
-		mCamera.startPreview();
+        // Start the preview
+        mCamera.startPreview();
     }
 
     public void setCameraParameters(Camera.Parameters params) {
-      cameraParameters = params;
+        cameraParameters = params;
 
-      if (mCamera != null && cameraParameters != null) {
-        mCamera.setParameters(cameraParameters);
-      }
+        if (mCamera != null && cameraParameters != null) {
+            mCamera.setParameters(cameraParameters);
+        }
     }
 
     public boolean hasFrontCamera(){
@@ -328,136 +322,130 @@ public class CameraActivity extends Fragment {
         canvas.drawBitmap(bitmap, -rect.left, -rect.top, null);
         return ret;
     }
-	
-	public void takePicture(final double maxWidth, final double maxHeight){
-		final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
-		if(mPreview != null) {
-			
-			if(!canTakePicture)
-				return;
-			
-			canTakePicture = false;
+    
+    public void takePicture(final double maxWidth, final double maxHeight){
+        final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
+        if (mPreview != null) {
+            if (!canTakePicture)
+                return;
+            
+            canTakePicture = false;
+            mPreview.setOneShotPreviewCallback(new Camera.PreviewCallback() {
+                @Override
+                public void onPreviewFrame(final byte[] data, final Camera camera) {
+                    new Thread() {
+                        public void run() {
+                            //raw picture
+                            byte[] bytes = mPreview.getFramePicture(data, camera);
+                            final Bitmap pic = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-			mPreview.setOneShotPreviewCallback(new Camera.PreviewCallback() {
+                            //scale down
+                            float scale = (float)pictureView.getWidth()/(float)pic.getWidth();
+                            Bitmap scaledBitmap = Bitmap.createScaledBitmap(pic, (int)(pic.getWidth()*scale), (int)(pic.getHeight()*scale), false);
 
-				@Override
-				public void onPreviewFrame(final byte[] data, final Camera camera) {
+                            final Matrix matrix = new Matrix();
+                            if (cameraCurrentlyLocked == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                                Log.d(TAG, "mirror y axis");
+                                matrix.preScale(-1.0f, 1.0f);
+                            }
+                            Log.d(TAG, "preRotate " + mPreview.getDisplayOrientation() + "deg");
+                            matrix.postRotate(mPreview.getDisplayOrientation());
 
-					new Thread() {
-						public void run() {
+                            final Bitmap fixedPic = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, false);
+                            final Rect rect = new Rect(mPreview.mSurfaceView.getLeft(), mPreview.mSurfaceView.getTop(), mPreview.mSurfaceView.getRight(), mPreview.mSurfaceView.getBottom());
 
-							//raw picture
-							byte[] bytes = mPreview.getFramePicture(data, camera);
-							final Bitmap pic = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pictureView.setImageBitmap(fixedPic);
+                                    pictureView.layout(rect.left, rect.top, rect.right, rect.bottom);
 
-							//scale down
-							float scale = (float)pictureView.getWidth()/(float)pic.getWidth();
-							Bitmap scaledBitmap = Bitmap.createScaledBitmap(pic, (int)(pic.getWidth()*scale), (int)(pic.getHeight()*scale), false);
+                                    Bitmap finalPic = null;
+                                    // If we are going to rotate the picture, width and height are reversed
+                                    boolean swapAspects = mPreview.getDisplayOrientation() % 180 != 0;
+                                    double rotatedWidth = swapAspects ? pic.getHeight() : pic.getWidth();
+                                    double rotatedHeight = swapAspects ? pic.getWidth() : pic.getHeight();
+                                    boolean shouldScaleWidth = maxWidth > 0 && rotatedWidth > maxWidth;
+                                    boolean shouldScaleHeight = maxHeight > 0 && rotatedHeight > maxHeight;
 
-							final Matrix matrix = new Matrix();
-							if (cameraCurrentlyLocked == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-								Log.d(TAG, "mirror y axis");
-								matrix.preScale(-1.0f, 1.0f);
-							}
-							Log.d(TAG, "preRotate " + mPreview.getDisplayOrientation() + "deg");
-							matrix.postRotate(mPreview.getDisplayOrientation());
+                                    //scale final picture
+                                    if (shouldScaleWidth || shouldScaleHeight) {
+                                        double scaleHeight = shouldScaleHeight ? maxHeight / (double)rotatedHeight : 1;
+                                        double scaleWidth = shouldScaleWidth ? maxWidth / (double)rotatedWidth : 1;
 
-							final Bitmap fixedPic = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, false);
-							final Rect rect = new Rect(mPreview.mSurfaceView.getLeft(), mPreview.mSurfaceView.getTop(), mPreview.mSurfaceView.getRight(), mPreview.mSurfaceView.getBottom());
+                                        double scale = scaleHeight < scaleWidth ? scaleHeight : scaleWidth;
+                                        finalPic = Bitmap.createScaledBitmap(pic, (int)(pic.getWidth()*scale), (int)(pic.getHeight()*scale), false);
+                                    }
+                                    else {
+                                        finalPic = pic;
+                                    }
 
-							getActivity().runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									pictureView.setImageBitmap(fixedPic);
-									pictureView.layout(rect.left, rect.top, rect.right, rect.bottom);
+                                    Bitmap originalPicture = Bitmap.createBitmap(finalPic, 0, 0, (int)(finalPic.getWidth()), (int)(finalPic.getHeight()), matrix, false);
 
-									Bitmap finalPic = null;
-									// If we are going to rotate the picture, width and height are reversed
-									boolean swapAspects = mPreview.getDisplayOrientation() % 180 != 0;
-									double rotatedWidth = swapAspects ? pic.getHeight() : pic.getWidth();
-									double rotatedHeight = swapAspects ? pic.getWidth() : pic.getHeight();
-									boolean shouldScaleWidth = maxWidth > 0 && rotatedWidth > maxWidth;
-									boolean shouldScaleHeight = maxHeight > 0 && rotatedHeight > maxHeight;
+                                    //get bitmap and compress
+                                    Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
 
-									//scale final picture
-									if(shouldScaleWidth || shouldScaleHeight){
-										double scaleHeight = shouldScaleHeight ? maxHeight / (double)rotatedHeight : 1;
-										double scaleWidth = shouldScaleWidth ? maxWidth / (double)rotatedWidth : 1;
-
-										double scale = scaleHeight < scaleWidth ? scaleHeight : scaleWidth;
-										finalPic = Bitmap.createScaledBitmap(pic, (int)(pic.getWidth()*scale), (int)(pic.getHeight()*scale), false);
-									}
-									else{
-										finalPic = pic;
-									}
-
-									Bitmap originalPicture = Bitmap.createBitmap(finalPic, 0, 0, (int)(finalPic.getWidth()), (int)(finalPic.getHeight()), matrix, false);
-
-								    //get bitmap and compress
-								    Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
-								    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-								    picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
-
-									generatePictureFromView(originalPicture, picture);
-									canTakePicture = true;
-								}
-							});
-						}
-					}.start();
-				}
-			});
-		}
-		else{
-			canTakePicture = true;
-		}
-	}
-    private void generatePictureFromView(final Bitmap originalPicture, final Bitmap picture){
-
-	    final FrameLayout cameraLoader = (FrameLayout)view.findViewById(getResources().getIdentifier("camera_loader", "id", appResourcesPackage));
-	    cameraLoader.setVisibility(View.VISIBLE);
-	    final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
-	    new Thread() {
-		    public void run() {
-
-			    try {
-				    final File picFile = storeImage(picture, "_preview");
-				    final File originalPictureFile = storeImage(originalPicture, "_original");
-
-					eventListener.onPictureTaken(originalPictureFile.getAbsolutePath(), picFile.getAbsolutePath());
-
-				    getActivity().runOnUiThread(new Runnable() {
-					    @Override
-					    public void run() {
-				            cameraLoader.setVisibility(View.INVISIBLE);
-						    pictureView.setImageBitmap(null);
-					    }
-				    });
-			    }
-			    catch(Exception e){
-				    //An unexpected error occurred while saving the picture.
-				    getActivity().runOnUiThread(new Runnable() {
-					    @Override
-					    public void run() {
-				            cameraLoader.setVisibility(View.INVISIBLE);
-						    pictureView.setImageBitmap(null);
-					    }
-				    });
-			    }
-		    }
-	    }.start();
+                                    generatePictureFromView(originalPicture, picture);
+                                    canTakePicture = true;
+                                }
+                            });
+                        }
+                    }.start();
+                }
+            });
+        }
+        else {
+            canTakePicture = true;
+        }
     }
 
-    private File getOutputMediaFile(String suffix){
+    private void generatePictureFromView(final Bitmap originalPicture, final Bitmap picture) {
+        final FrameLayout cameraLoader = (FrameLayout)view.findViewById(getResources().getIdentifier("camera_loader", "id", appResourcesPackage));
+        cameraLoader.setVisibility(View.VISIBLE);
+        final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
+        new Thread() {
+            public void run() {
+                try {
+                    final File picFile = storeImage(picture, "_preview");
+                    final File originalPictureFile = storeImage(originalPicture, "_original");
 
-	    File mediaStorageDir = getActivity().getApplicationContext().getFilesDir();
-	    /*if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED_READ_ONLY) {
-		    mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getApplicationContext().getPackageName() + "/Files");
-	    }*/
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
+                    eventListener.onPictureTaken(originalPictureFile.getAbsolutePath(), picFile.getAbsolutePath());
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            cameraLoader.setVisibility(View.INVISIBLE);
+                            pictureView.setImageBitmap(null);
+                        }
+                    });
+                }
+                catch(Exception e) {
+                    //An unexpected error occurred while saving the picture.
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            cameraLoader.setVisibility(View.INVISIBLE);
+                            pictureView.setImageBitmap(null);
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
+    private File getOutputMediaFile(String suffix) {
+        File mediaStorageDir = getActivity().getApplicationContext().getFilesDir();
+        /*if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED_READ_ONLY) {
+            mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getApplicationContext().getPackageName() + "/Files");
+        }*/
+        if (! mediaStorageDir.exists()) {
+            if (! mediaStorageDir.mkdirs()) {
                 return null;
             }
         }
+
         // Create a media file name
         String timeStamp = new SimpleDateFormat("dd_MM_yyyy_HHmm_ss").format(new Date());
         File mediaFile;
@@ -481,26 +469,25 @@ public class CameraActivity extends Fragment {
         return null;
     }
 
-	public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-		int inSampleSize = 1;
+    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
 
-		if (height > reqHeight || width > reqWidth) {
+        if (height > reqHeight || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
 
-			final int halfHeight = height / 2;
-			final int halfWidth = width / 2;
-
-			// Calculate the largest inSampleSize value that is a power of 2 and keeps both
-			// height and width larger than the requested height and width.
-			while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
-				inSampleSize *= 2;
-			}
-		}
-		return inSampleSize;
-	}
-	
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+    
     private Bitmap loadBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap( v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
@@ -514,7 +501,6 @@ public class CameraActivity extends Fragment {
         super.onDestroy();
     }
 }
-
 
 class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     private final String TAG = "Preview";
@@ -554,7 +540,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     public int getDisplayOrientation() {
-    	return displayOrientation;
+        return displayOrientation;
     }
 
     private void setCameraDisplayOrientation() {
@@ -584,15 +570,15 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
 
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-        	displayOrientation=(info.orientation + degrees) % 360;
-        	displayOrientation=(360 - displayOrientation) % 360;
+            displayOrientation=(info.orientation + degrees) % 360;
+            displayOrientation=(360 - displayOrientation) % 360;
         } else {
-        	displayOrientation=(info.orientation - degrees + 360) % 360;
+            displayOrientation=(info.orientation - degrees + 360) % 360;
         }
 
         Log.d(TAG, "screen is rotated " + degrees + "deg from natural");
         Log.d(TAG, (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "front" : "back")
-        	+ " camera is oriented -" + info.orientation + "deg from natural");
+            + " camera is oriented -" + info.orientation + "deg from natural");
         Log.d(TAG, "need to rotate preview " + displayOrientation + "deg");
         mCamera.setDisplayOrientation(displayOrientation);
     }
@@ -601,9 +587,9 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         setCamera(camera, cameraId);
         try {
             camera.setPreviewDisplay(mHolder);
-	        Camera.Parameters parameters = camera.getParameters();
+            Camera.Parameters parameters = camera.getParameters();
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-	        camera.setParameters(parameters);
+            camera.setParameters(parameters);
         }
         catch (IOException exception) {
             Log.e(TAG, exception.getMessage());
@@ -627,7 +613,6 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
         if (changed && getChildCount() > 0) {
             final View child = getChildAt(0);
 
@@ -646,7 +631,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
                     previewHeight = mPreviewSize.width;
                 }
 
-	            LOG.d(TAG, "previewWidth:" + previewWidth + " previewHeight:" + previewHeight);
+                LOG.d(TAG, "previewWidth:" + previewWidth + " previewHeight:" + previewHeight);
             }
 
             int nW;
@@ -740,16 +725,16 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-	    if(mCamera != null) {
-		    // Now that the size is known, set up the camera parameters and begin
-		    // the preview.
-		    Camera.Parameters parameters = mCamera.getParameters();
+        if(mCamera != null) {
+            // Now that the size is known, set up the camera parameters and begin
+            // the preview.
+            Camera.Parameters parameters = mCamera.getParameters();
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-		    requestLayout();
-		    //mCamera.setDisplayOrientation(90);
-		    mCamera.setParameters(parameters);
-		    mCamera.startPreview();
-	    }
+            requestLayout();
+            //mCamera.setDisplayOrientation(90);
+            mCamera.setParameters(parameters);
+            mCamera.startPreview();
+        }
     }
 
     public byte[] getFramePicture(byte[] data, Camera camera) {
@@ -777,24 +762,25 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
     }
 }
+
 class TapGestureDetector extends GestureDetector.SimpleOnGestureListener{
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
 
-	@Override
-	public boolean onDown(MotionEvent e) {
-		return false;
-	}
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return true;
+    }
 
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		return true;
-	}
-
-	@Override
-	public boolean onSingleTapConfirmed(MotionEvent e) {
-		return true;
-	}
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        return true;
+    }
 }
-class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
+
+class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private final String TAG = "CustomSurfaceView";
 
     CustomSurfaceView(Context context){

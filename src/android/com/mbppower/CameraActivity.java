@@ -401,8 +401,9 @@ public class CameraActivity extends Fragment {
         }
     }
 
-    public void setText(final string text) {
+    public void setText(final String text) {
         Log.d(TAG, "XXX Setting text to " + text);
+	((TextView) view.findViewById(getResources().getIdentifier("metrics_text", "id", appResourcesPackage))).setText(text);
         if (metricsView != null) {
             metricsView.setText(text);
         }

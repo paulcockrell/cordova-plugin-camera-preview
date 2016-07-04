@@ -72,6 +72,7 @@ public class CameraActivity extends Fragment {
     public int height;
     public int x;
     public int y;
+    public String textTime;
 
     public void setEventListener(CameraPreviewListener listener){
         eventListener = listener;
@@ -86,6 +87,7 @@ public class CameraActivity extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(getResources().getIdentifier("camera_activity", "layout", appResourcesPackage), container, false);
         createCameraPreview();
+	createTextViewUpdater();
         return view;
     }
 
@@ -99,6 +101,28 @@ public class CameraActivity extends Fragment {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    private void createTextViewUpdater() {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateTextView();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        t.start();
     }
 
     private void createCameraPreview() {
@@ -402,10 +426,13 @@ public class CameraActivity extends Fragment {
     }
 
     public void setText(final String text) {
-        Log.d(TAG, "XXX Setting text to " + text);
-	((TextView) view.findViewById(getResources().getIdentifier("metrics_text", "id", appResourcesPackage))).setText(text);
+        textTime = text;
+    }
+   
+    private void updateTextView() {
+        Log.d(TAG, "XXX Setting text to " + textTime);
         if (metricsView != null) {
-            metricsView.setText(text);
+            metricsView.setText(textTime);
         }
     }
 

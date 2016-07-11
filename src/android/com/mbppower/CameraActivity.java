@@ -14,6 +14,7 @@ import android.graphics.YuvImage;
 import android.graphics.Paint;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;

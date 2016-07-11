@@ -491,7 +491,8 @@ public class CameraActivity extends Fragment {
         String timeStamp = new SimpleDateFormat("dd_MM_yyyy_HHmm_ss").format(new Date());
         File mediaFile;
         String mImageName = "camerapreview_" + timeStamp + suffix + ".jpg";
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        //mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        mediaFile = new File(filePath + File.separator + mImageName);
         Log.d(TAG, "XXX file path: " + mediaFile);
         return mediaFile;
     }

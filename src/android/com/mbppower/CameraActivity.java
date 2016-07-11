@@ -479,9 +479,15 @@ public class CameraActivity extends Fragment {
 
     private File getOutputMediaFile(String suffix) {
         File mediaStorageDir = getActivity().getApplicationContext().getFilesDir();
+	Log.d(TAG, "XXX a: Environment.MEDIA_MOUNTED: " + Environment.MEDIA_MOUNTED);
+	Log.d(TAG, "XXX b: Environment.MEDIA_MOUNTED_READ_ONLY: " + Environment.MEDIA_MOUNTED_READ_ONLY);
         if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED_READ_ONLY) {
+	    Log.d(TAG, "XXX setting file to external storage");
             mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getApplicationContext().getPackageName() + "/Files");
         }
+	else {
+	    Log.d(TAG, "XXX Uh oh no external storage");
+	}
         if (! mediaStorageDir.exists()) {
             if (! mediaStorageDir.mkdirs()) {
 	        Log.d(TAG, "XXX oh shit failed to create the directories man! " + mediaStorageDir.getPath());

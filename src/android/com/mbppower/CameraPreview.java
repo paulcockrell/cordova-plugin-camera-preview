@@ -33,6 +33,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
     private final String showCameraAction = "showCamera";
     private final String hideCameraAction = "hideCamera";
     private final String setTextAction = "setText";
+    private final String setFilePath = "setFilePath";
 
     public static final int START_CAMERA_SEC = 0;
     public static final int PERMISSION_DENIED_ERROR = 20;
@@ -82,6 +83,9 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
         }
         else if (setTextAction.equals(action)){
             return setText(args, callbackContext);
+        }
+        else if (setFilePath.equals(action)){
+            return setFilePath(args, callbackContext);
         }
 
         return false;
@@ -330,6 +334,21 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
         try {
             String text = args.getString(0);
             fragment.setText(text);
+	}
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    private boolean setFilePath(final JSONArray args, CallbackContext callbackContext) {
+        Log.d(TAG, "setFilePath XXX");
+        if (fragment == null) return false;
+
+        try {
+            String filePath = args.getString(0);
+            fragment.setFilePath(filePath);
 	}
         catch(Exception e) {
             e.printStackTrace();

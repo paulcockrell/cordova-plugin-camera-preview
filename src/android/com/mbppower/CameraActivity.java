@@ -73,6 +73,7 @@ public class CameraActivity extends Fragment {
     public int x;
     public int y;
     public String textTime;
+    public String filePath;
 
     public void setEventListener(CameraPreviewListener listener){
         eventListener = listener;
@@ -428,6 +429,11 @@ public class CameraActivity extends Fragment {
     public void setText(final String text) {
         textTime = text;
     }
+
+    public void setFilePath(final String path) {
+        filePath = path;
+    }
+   
    
     private void updateTextView() {
         Log.d(TAG, "XXX Setting text to " + textTime);

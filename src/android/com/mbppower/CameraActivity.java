@@ -431,6 +431,7 @@ public class CameraActivity extends Fragment {
     }
 
     public void setFilePath(final String path) {
+        Log.d(TAG, "XXX setFilePath " + path);
         filePath = path;
     }
    
@@ -492,9 +493,11 @@ public class CameraActivity extends Fragment {
         File mediaFile;
         String mImageName = "camerapreview_" + timeStamp + suffix + ".jpg";
 	if (filePath != null) {
+	    Log.d(TAG, "XXX using file 1");
             mediaFile = new File(filePath + File.separator + mImageName);
 	}
 	else {
+	    Log.d(TAG, "XXX using file 2");
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
 	}
         Log.d(TAG, "XXX file path: " + mediaFile);

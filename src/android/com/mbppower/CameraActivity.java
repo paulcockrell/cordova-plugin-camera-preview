@@ -486,6 +486,7 @@ public class CameraActivity extends Fragment {
         File mediaFile;
         String mImageName = "camerapreview_" + timeStamp + suffix + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        Log.d(TAG, "XXX file path: " + mediaFile);
         return mediaFile;
     }
 

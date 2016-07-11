@@ -59,7 +59,7 @@ CameraPreview.setText = function(text) {
 CameraPreview.setFilePath = function(filePath) {
     var params = [""];
     if (filePath) params = [filePath];
-    exec(null, null, PLUGIN_NAME, "setFilePath", [filePath]);
+    exec(null, null, PLUGIN_NAME, "setFilePath", params);
 };
 
 

@@ -437,7 +437,6 @@ public class CameraActivity extends Fragment {
    
    
     private void updateTextView() {
-        Log.d(TAG, "XXX Setting text to " + textTime);
         if (metricsView != null) {
             metricsView.setText(textTime);
         }
@@ -479,13 +478,17 @@ public class CameraActivity extends Fragment {
 
     private File getOutputMediaFile(String suffix) {
         File mediaStorageDir = getActivity().getApplicationContext().getFilesDir();
-        /*if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED_READ_ONLY) {
+        if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED_READ_ONLY) {
             mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getApplicationContext().getPackageName() + "/Files");
-        }*/
+        }
         if (! mediaStorageDir.exists()) {
             if (! mediaStorageDir.mkdirs()) {
+	        Log.d(TAG, "XXX oh shit failed to create the directories man! " + mediaStorageDir.getPath());
                 return null;
             }
+	    else {
+	        Log.d(TAG, "XXX Created the directories man! " + mediaStorageDir.getPath());
+	    }
         }
 
         // Create a media file name

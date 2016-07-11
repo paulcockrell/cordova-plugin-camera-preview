@@ -328,7 +328,6 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
     }
 
     private boolean setText(final JSONArray args, CallbackContext callbackContext) {
-        Log.d(TAG, "setTextHandler XXX");
         if (fragment == null) return false;
 
         try {

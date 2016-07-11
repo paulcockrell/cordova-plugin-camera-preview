@@ -1,5 +1,6 @@
 package com.mbppower;
 
+import android.Maifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;

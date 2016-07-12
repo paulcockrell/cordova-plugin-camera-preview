@@ -940,7 +940,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     protected void onDraw(Canvas canvas) {
         Paint p = new Paint(Color.RED);
-        canvas.drawText("Preview", 10, 100, p);
+        canvas.drawText("Preview", 10, 15 p);
         Log.d(TAG, "XXX On draw called");
     }
 

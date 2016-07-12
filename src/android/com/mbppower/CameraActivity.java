@@ -119,7 +119,7 @@ public class CameraActivity extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(getResources().getIdentifier("camera_activity", "layout", appResourcesPackage), container, false);
         createCameraPreview();
-	createTextViewUpdater();
+	      createTextViewUpdater();
         return view;
     }
 
@@ -773,6 +773,15 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
     }
 
+    void SimpleDraw() {
+        Canvas canvas = mHolder.lockCanvas(new Rect(0, 0, 300, 300));
+        Paint mPaint = new Paint();
+        mPaint.setColor(Color.GREEN);
+        mPaint.setStrokeWidth(2);
+        canvas.drawCircle(150,150,80,mPaint);
+        mHolder.unlockCanvasAndPost(canvas);
+    }
+
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
@@ -780,6 +789,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
             if (mCamera != null) {
                 mSurfaceView.setWillNotDraw(false);
                 mCamera.setPreviewDisplay(holder);
+                simpleDraw();
             }
         } catch (IOException exception) {
             Log.e(TAG, "IOException caused by setPreviewDisplay()", exception);
@@ -889,8 +899,6 @@ class TapGestureDetector extends GestureDetector.SimpleOnGestureListener{
 
 class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private final String TAG = "CustomSurfaceView";
-    boolean surfaceExists = false;
-    SurfaceHolder mHolder;
 
     CustomSurfaceView(Context context){
         super(context);
@@ -898,44 +906,39 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.d(TAG, " XXX okay surfaceCreated!");
-        surfaceExists = true;
-        mHolder = holder;
-        new DrawTextThread().execute();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.d(TAG, "XXX surfaceChanged!");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d(TAG, " XXX okay surfaceDestroyed!");
-        surfaceExists = false;
     }
 
-    class DrawTextThread extends AsyncTask {
-        private final String TAG = "DrawTextThread";
-
-        @Override
-        protected Object doInBackground(Object... params) {
-            while(surfaceExists) {
-                Log.d(TAG, " XXX okay Yeah baby get drawing!");
-                Canvas rCanvas = getHolder().lockCanvas();
-                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint.setColor(Color.rgb(61,61,61));
-                paint.setTextSize((int) (14 * 2));
-                paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
-                Rect bounds = new Rect();
-                String text = "Holy shit!";
-                paint.getTextBounds(text, 0, text.length(), bounds);
-                rCanvas.drawText(text, 10, 10, paint);
-                getHolder().unlockCanvasAndPost(rCanvas);
-            }
-
-            return null;
-        }
-
-    }
 }
+/* Delete me
+*    class DrawTextThread extends AsyncTask {
+*        private final String TAG = "DrawTextThread";
+
+*        @Override
+*        protected Object doInBackground(Object... params) {
+*            while(surfaceExists) {
+*                Log.d(TAG, " XXX okay Yeah baby get drawing!");
+*                Canvas rCanvas = getHolder().lockCanvas();
+*                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+*                paint.setColor(Color.rgb(61,61,61));
+*                paint.setTextSize((int) (14 * 2));
+*                paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+*                Rect bounds = new Rect();
+*                String text = "Holy shit!";
+*                paint.getTextBounds(text, 0, text.length(), bounds);
+*                rCanvas.drawText(text, 10, 10, paint);
+*                getHolder().unlockCanvasAndPost(rCanvas);
+*            }
+
+*            return null;
+*        }
+
+*    }
+*/

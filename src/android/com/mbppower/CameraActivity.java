@@ -964,6 +964,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
          private SurfaceHolder surfaceHolder;
          private CustomSurfaceView gameView;
          private boolean run = false;
+         private static final String TAG = "GameThread";
 
          public GameThread(SurfaceHolder surfaceHolder, CustomSurfaceView gameView) {
              this.surfaceHolder = surfaceHolder;
@@ -971,6 +972,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
          }
 
          public void setRunning(boolean run) {
+             Log.d(TAG, "XXX set Running!");
              this.run = run;
          }
 
@@ -1001,6 +1003,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                      c = surfaceHolder.lockCanvas(null);
                      synchronized (surfaceHolder) {
                         //call methods to draw and process next fame
+                        Log.d(TAG, "XXX calling on draw");
                          gameView.onDraw(c);
                      }
                  } catch(Exception e) {

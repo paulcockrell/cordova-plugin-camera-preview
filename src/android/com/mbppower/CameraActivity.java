@@ -898,7 +898,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.d(TAG, " XXX okay surfaceCreated!")
+        Log.d(TAG, " XXX okay surfaceCreated!");
         surfaceExists = true;
         mHolder = holder;
         new DrawTextThread().execute();
@@ -910,7 +910,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d(TAG, " XXX okay surfaceDestroyed!")
+        Log.d(TAG, " XXX okay surfaceDestroyed!");
         surfaceExists = false;
     }
 
@@ -920,7 +920,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         protected Object doInBackground(Object... params) {
             while(surfaceExists) {
-                Log.d(TAG, " XXX okay Yeah baby get drawing!")
+                Log.d(TAG, " XXX okay Yeah baby get drawing!");
                 Canvas rCanvas = getHolder().lockCanvas();
                 Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 paint.setColor(Color.rgb(61,61,61));

@@ -774,12 +774,13 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     private void simpleDraw() {
-        Canvas canvas = mHolder.lockCanvas(new Rect(0, 0, 300, 300));
+        gHolder = mSurfaceView.getHolder();
+        Canvas canvas = gHolder.lockCanvas(new Rect(0, 0, 300, 300));
         Paint mPaint = new Paint();
         mPaint.setColor(Color.GREEN);
         mPaint.setStrokeWidth(2);
         canvas.drawCircle(150,150,80,mPaint);
-        mHolder.unlockCanvasAndPost(canvas);
+        gHolder.unlockCanvasAndPost(canvas);
     }
 
     public void surfaceCreated(SurfaceHolder holder) {

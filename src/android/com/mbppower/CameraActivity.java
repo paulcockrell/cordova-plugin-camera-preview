@@ -773,7 +773,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
     }
 
-    private void simpleDraw(SurfaceHolder mmHolder) {
+    public boolean simpleDraw(SurfaceHolder mmHolder) {
         if (mmHolder != null && mmHolder.getSurface().isValid()) {
             Log.d(TAG, "XXX mmholder is good");
         }
@@ -792,6 +792,8 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         else {
             Log.d(TAG, "XXX shit");
         }
+
+        return true;
     }
 
     public void surfaceCreated(SurfaceHolder holder) {

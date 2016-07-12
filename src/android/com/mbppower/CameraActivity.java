@@ -1004,6 +1004,8 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                         //call methods to draw and process next fame
                          gameView.onDraw(c);
                      }
+                 } catch(Exception e) {
+                     Log.d(TAG, "XXX gosh darn it!");
                  } finally {
                      if (c != null) {
                          surfaceHolder.unlockCanvasAndPost(c);

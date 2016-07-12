@@ -88,7 +88,7 @@ public class CameraActivity extends Fragment {
     }
 
     private String appResourcesPackage;
-    
+
     /**
      * Checks if the app has permission to write to device storage
      *
@@ -125,7 +125,7 @@ public class CameraActivity extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-    
+
     public void setRect(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
@@ -248,7 +248,7 @@ public class CameraActivity extends Fragment {
             });
         }
     }
-    
+
     private void setDefaultCameraId() {
         // Find the total number of cameras available
         numberOfCameras = Camera.getNumberOfCameras();
@@ -264,11 +264,11 @@ public class CameraActivity extends Fragment {
             }
         }
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
-    
+
         // Sets the Default Camera as the current one (initializes mCamera instance)
         setCurrentCamera(defaultCameraId);
         if (mPreview.mPreviewSize == null) {
@@ -297,7 +297,7 @@ public class CameraActivity extends Fragment {
             });
         }
     }
-    
+
     // Sets the current camera - allows to set cameraParameters from a single place (e.g. can be used to set AutoFocus and Autoflash)
     private void setCurrentCamera(int cameraId) {
         mCamera = Camera.open(cameraId);
@@ -344,10 +344,10 @@ public class CameraActivity extends Fragment {
         // Acquire the next camera and request Preview to reconfigure
         // parameters.
         int nextCameraId = (cameraCurrentlyLocked + 1) % numberOfCameras;
-        
+
         // Set the next camera as the current one and apply the cameraParameters
         setCurrentCamera(nextCameraId);
-        
+
         mPreview.switchCamera(mCamera, cameraCurrentlyLocked);
 
         Log.d(TAG, "cameraCurrentlyLocked new: " + cameraCurrentlyLocked);
@@ -376,13 +376,13 @@ public class CameraActivity extends Fragment {
         canvas.drawBitmap(bitmap, -rect.left, -rect.top, null);
         return ret;
     }
-    
+
     public void takePicture(final double maxWidth, final double maxHeight){
         final ImageView pictureView = (ImageView) view.findViewById(getResources().getIdentifier("picture_view", "id", appResourcesPackage));
         if (mPreview != null) {
             if (!canTakePicture)
                 return;
-            
+
             canTakePicture = false;
             mPreview.setOneShotPreviewCallback(new Camera.PreviewCallback() {
                 @Override
@@ -393,9 +393,25 @@ public class CameraActivity extends Fragment {
                             byte[] bytes = mPreview.getFramePicture(data, camera);
                             final Bitmap pic = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
+
+
+                            android.graphics.Bitmap.Config bitmapConfig = pic.getConfig();
+                            Bitmap pic2 = pic.copy(bitmapConfig, true);
+                            Canvas canvas = new Canvas(pic2);
+                            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                            paint.setColor(Color.rgb(61,61,61));
+                            paint.setTextSize((int) (14 * 2));
+                            paint.setShadowLayer(1f, 0f 1f, Color.White);
+                            Rect bounds = new Rect();
+                            String text = "Hello";
+                            paint.getTextBounds(text, 0, text.length(), bounds);
+                            int x = (bitmap.getWidth() - bounds.width())/2;
+                            int y = (bitmap.getHeight() - bound.height())/2;
+                            canvas.drawText(text, x, y, paint);
+
                             //scale down
-                            float scale = (float)pictureView.getWidth()/(float)pic.getWidth();
-                            Bitmap scaledBitmap = Bitmap.createScaledBitmap(pic, (int)(pic.getWidth()*scale), (int)(pic.getHeight()*scale), false);
+                            float scale = (float)pictureView.getWidth()/(float)pic2.getWidth();
+                            Bitmap scaledBitmap = Bitmap.createScaledBitmap(pic2, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
 
                             final Matrix matrix = new Matrix();
                             if (cameraCurrentlyLocked == Camera.CameraInfo.CAMERA_FACING_FRONT) {
@@ -417,8 +433,8 @@ public class CameraActivity extends Fragment {
                                     Bitmap finalPic = null;
                                     // If we are going to rotate the picture, width and height are reversed
                                     boolean swapAspects = mPreview.getDisplayOrientation() % 180 != 0;
-                                    double rotatedWidth = swapAspects ? pic.getHeight() : pic.getWidth();
-                                    double rotatedHeight = swapAspects ? pic.getWidth() : pic.getHeight();
+                                    double rotatedWidth = swapAspects ? pic2.getHeight() : pic2.getWidth();
+                                    double rotatedHeight = swapAspects ? pic2.getWidth() : pic2.getHeight();
                                     boolean shouldScaleWidth = maxWidth > 0 && rotatedWidth > maxWidth;
                                     boolean shouldScaleHeight = maxHeight > 0 && rotatedHeight > maxHeight;
 
@@ -428,10 +444,10 @@ public class CameraActivity extends Fragment {
                                         double scaleWidth = shouldScaleWidth ? maxWidth / (double)rotatedWidth : 1;
 
                                         double scale = scaleHeight < scaleWidth ? scaleHeight : scaleWidth;
-                                        finalPic = Bitmap.createScaledBitmap(pic, (int)(pic.getWidth()*scale), (int)(pic.getHeight()*scale), false);
+                                        finalPic = Bitmap.createScaledBitmap(pic, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
                                     }
                                     else {
-                                        finalPic = pic;
+                                        finalPic = pic2;
                                     }
 
                                     Bitmap originalPicture = Bitmap.createBitmap(finalPic, 0, 0, (int)(finalPic.getWidth()), (int)(finalPic.getHeight()), matrix, false);
@@ -463,8 +479,8 @@ public class CameraActivity extends Fragment {
         Log.d(TAG, "XXX setFilePath " + path);
         filePath = path;
     }
-   
-   
+
+
     private void updateTextView() {
         if (metricsView != null) {
             metricsView.setText(textTime);
@@ -575,7 +591,7 @@ public class CameraActivity extends Fragment {
         }
         return inSampleSize;
     }
-    
+
     private Bitmap loadBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap( v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
@@ -583,7 +599,7 @@ public class CameraActivity extends Fragment {
         v.draw(c);
         return b;
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();

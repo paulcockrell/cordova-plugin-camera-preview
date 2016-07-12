@@ -921,6 +921,18 @@ class TapGestureDetector extends GestureDetector.SimpleOnGestureListener{
 class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private final String TAG = "CustomSurfaceView";
     GameThread thread;
+    //Measure frames per second.
+    long now;
+    int framesCount=0;
+    int framesCountAvg=0;
+    long framesTimer=0;
+    Paint fpsPaint=new Paint();
+
+    //Frame speed
+    long timeNow;
+    long timePrev = 0;
+    long timePrevFrame = 0;
+    long timeDelta;
 
     CustomSurfaceView(Context context){
         super(context);
@@ -951,7 +963,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     class GameThread extends Thread {
          private SurfaceHolder surfaceHolder;
-         private BallBounces gameView;
+         private CustomSurfaceView gameView;
          private boolean run = false;
 
          public GameThread(SurfaceHolder surfaceHolder, CustomSurfaceView gameView) {

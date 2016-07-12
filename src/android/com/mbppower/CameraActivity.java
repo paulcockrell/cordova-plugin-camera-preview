@@ -811,10 +811,10 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.draw(canvas);
         Paint p = new Paint(Color.RED);
         canvas.drawText("Preview", 10, 100, p);
         Log.d(TAG, "XXX On draw called");
+        super.draw(canvas);
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -937,13 +937,13 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceDestroyed(SurfaceHolder holder) {
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.draw(canvas);
-        Paint p = new Paint(Color.RED);
-        canvas.drawText("Preview", 10, 100, p);
-        Log.d(TAG, "XXX On draw called");
-    }
+    //@Override
+    //protected void onDraw(Canvas canvas) {
+    //    super.draw(canvas);
+    //    Paint p = new Paint(Color.RED);
+    //    canvas.drawText("Preview", 10, 100, p);
+    //    Log.d(TAG, "XXX On draw called");
+    //}
 
 
 }

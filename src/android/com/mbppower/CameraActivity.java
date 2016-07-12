@@ -386,7 +386,13 @@ public class CameraActivity extends Fragment {
         if (cameraParameters != null) {
           mCamera.setParameters(cameraParameters);
         }
-
+        mCamera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
+            private long timestamp = 0;
+            public synchronized void onPreviewFrame(byte[] data, Camera camera) {
+              Log.v("CameraTest","Time Gap = "+(System.currentTimeMillis()-timestamp));
+              timestamp=System.currentTimeMillis();
+            };
+        });
         cameraCurrentlyLocked = cameraId;
     }
 

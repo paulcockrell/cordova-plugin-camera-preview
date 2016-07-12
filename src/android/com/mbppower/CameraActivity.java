@@ -401,7 +401,7 @@ public class CameraActivity extends Fragment {
                             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                             paint.setColor(Color.rgb(61,61,61));
                             paint.setTextSize((int) (14 * 2));
-                            paint.setShadowLayer(1f, 0f 1f, Color.White);
+                            paint.setShadowLayer(1f, 0f, 1f, Color.White);
                             Rect bounds = new Rect();
                             String text = "Hello";
                             paint.getTextBounds(text, 0, text.length(), bounds);

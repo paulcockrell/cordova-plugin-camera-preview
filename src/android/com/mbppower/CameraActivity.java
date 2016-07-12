@@ -901,7 +901,6 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         surfaceExists = true;
         mHolder = holder;
         new DrawTextThread().execute();
-        thread.execute(null);
     }
 
     @Override

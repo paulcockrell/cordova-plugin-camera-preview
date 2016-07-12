@@ -925,7 +925,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                 Rect bounds = new Rect();
                 String text = "Holy shit!";
                 paint.getTextBounds(text, 0, text.length(), bounds);
-                canvas.drawText(text, 10, 10, paint);
+                rCanvas.drawText(text, 10, 10, paint);
                 getHolder().unlockCanvasAndPost(rCanvas);
             }
         }

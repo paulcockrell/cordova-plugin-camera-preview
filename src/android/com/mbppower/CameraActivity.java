@@ -17,6 +17,7 @@ import android.graphics.Paint;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -773,10 +774,6 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        drawThread = new DrawThread(holder, context, this);
-        drawThread.setRunning(true);
-        drawThread.start();
-
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
         try {
@@ -790,18 +787,6 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
-        drawThread.setRunning(false);
-        boolean retry = true;
-        while(retry) {
-            try {
-                drawThread.join();
-                retry = false;
-            }
-            catch(Exception e) {
-                Log.v("Exception Occured", e.getMessage());
-            }
-        }
-
         // Surface will be destroyed when we return, so stop the preview.
         if (mCamera != null) {
             mCamera.stopPreview();

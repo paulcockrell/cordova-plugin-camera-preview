@@ -1002,6 +1002,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                      c = surfaceHolder.lockCanvas(null);
                      synchronized (surfaceHolder) {
                         //call methods to draw and process next fame
+                         Log.d(TAG, "XXX ah cumon");
                          gameView.onDraw(c);
                      }
                  } catch(Exception e) {

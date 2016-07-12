@@ -773,7 +773,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
     }
 
-    void SimpleDraw() {
+    private void simpleDraw() {
         Canvas canvas = mHolder.lockCanvas(new Rect(0, 0, 300, 300));
         Paint mPaint = new Paint();
         mPaint.setColor(Color.GREEN);

@@ -773,27 +773,27 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
     }
 
-    public boolean simpleDraw(SurfaceHolder mHolder) {
-        if (mHolder == null || !mHolder.getSurface().isValid()) {
-            Log.d(TAG, "XXX mmholder is bad");
-            return false;
-        }
+    //public boolean simpleDraw(SurfaceHolder mHolder) {
+    //    if (mHolder == null || !mHolder.getSurface().isValid()) {
+    //        Log.d(TAG, "XXX mmholder is bad");
+    //        return false;
+    //    }
 
-        Canvas canvas = mHolder.lockCanvas();
-        if (canvas != null) {
-            Log.d(TAG, "XXX Canvas is not null");
-            Paint mPaint = new Paint();
-            mPaint.setColor(Color.GREEN);
-            mPaint.setStrokeWidth(2);
-            canvas.drawCircle(150,150,80,mPaint);
-            mHolder.unlockCanvasAndPost(canvas);
-        }
-        else {
-            Log.d(TAG, "XXX Canvas is null");
-        }
+    //    Canvas canvas = mHolder.lockCanvas();
+    //    if (canvas != null) {
+    //        Log.d(TAG, "XXX Canvas is not null");
+    //        Paint mPaint = new Paint();
+    //        mPaint.setColor(Color.GREEN);
+    //        mPaint.setStrokeWidth(2);
+    //        canvas.drawCircle(150,150,80,mPaint);
+    //        mHolder.unlockCanvasAndPost(canvas);
+    //    }
+    //    else {
+    //        Log.d(TAG, "XXX Canvas is null");
+    //    }
 
-        return true;
-    }
+    //    return true;
+    //}
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, acquire the camera and tell it where
@@ -942,7 +942,6 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
         Paint p = new Paint(Color.RED);
         canvas.drawText("Preview", 10, 100, p);
         Log.d(TAG, "XXX On draw called");
-        super.draw(canvas);
     }
 
 

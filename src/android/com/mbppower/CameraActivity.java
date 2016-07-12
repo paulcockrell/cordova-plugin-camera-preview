@@ -810,7 +810,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     @Override
-    protected void draw(Canvas canvas) {
+    public void draw(Canvas canvas) {
         super.draw(canvas);
         Paint p = new Paint(Color.RED);
         canvas.drawText("Preview", 10, 100, p);

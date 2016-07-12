@@ -920,6 +920,7 @@ class TapGestureDetector extends GestureDetector.SimpleOnGestureListener{
 
 class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private final String TAG = "CustomSurfaceView";
+    GameThread thread;
 
     CustomSurfaceView(Context context){
         super(context);
@@ -927,6 +928,9 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        thread = new GameThread(getHolder(), this);
+        thread.setRunning(true);
+        thread.start();
     }
 
     @Override
@@ -939,12 +943,63 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
         Paint p = new Paint(Color.RED);
         canvas.drawText("Preview", 10, 15, p);
         Log.d(TAG, "XXX On draw called");
     }
 
+    class GameThread extends Thread {
+         private SurfaceHolder surfaceHolder;
+         private BallBounces gameView;
+         private boolean run = false;
 
+         public GameThread(SurfaceHolder surfaceHolder, CustomSurfaceView gameView) {
+             this.surfaceHolder = surfaceHolder;
+             this.gameView = gameView;
+         }
+
+         public void setRunning(boolean run) {
+             this.run = run;
+         }
+
+         public SurfaceHolder getSurfaceHolder() {
+             return surfaceHolder;
+         }
+
+         @Override
+         public void run() {
+             Canvas c;
+             while (run) {
+                 c = null;
+
+                 //limit frame rate to max 60fps
+                 timeNow = System.currentTimeMillis();
+                 timeDelta = timeNow - timePrevFrame;
+                 if ( timeDelta < 16) {
+                     try {
+                         Thread.sleep(16 - timeDelta);
+                     }
+                     catch(InterruptedException e) {
+
+                     }
+                 }
+                 timePrevFrame = System.currentTimeMillis();
+
+                 try {
+                     c = surfaceHolder.lockCanvas(null);
+                     synchronized (surfaceHolder) {
+                        //call methods to draw and process next fame
+                         gameView.onDraw(c);
+                     }
+                 } finally {
+                     if (c != null) {
+                         surfaceHolder.unlockCanvasAndPost(c);
+                     }
+                 }
+             }
+         }
+    }
 }
 /* Delete me
 *    class DrawTextThread extends AsyncTask {

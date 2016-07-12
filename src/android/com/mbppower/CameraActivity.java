@@ -928,6 +928,8 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                 rCanvas.drawText(text, 10, 10, paint);
                 getHolder().unlockCanvasAndPost(rCanvas);
             }
+
+            return null;
         }
 
     }

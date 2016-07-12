@@ -900,7 +900,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         surfaceExists = true;
         mHolder = holder;
-        DrawTextThread thread = new DrawTextThread();
+        new DrawTextThread().execute();
         thread.execute(null);
     }
 
@@ -924,7 +924,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                 paint.setTextSize((int) (14 * 2));
                 paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
                 Rect bounds = new Rect();
-                String text = textTime;
+                String text = "Holy shit!";
                 paint.getTextBounds(text, 0, text.length(), bounds);
                 canvas.drawText(text, 10, 10, paint);
                 getHolder().unlockCanvasAndPost(rCanvas);

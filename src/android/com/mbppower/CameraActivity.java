@@ -955,7 +955,6 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         Paint p = new Paint(Color.RED);
         canvas.drawText("Preview", 10, 15, p);
         Log.d(TAG, "XXX On draw called");
@@ -1002,7 +1001,6 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
                      c = surfaceHolder.lockCanvas(null);
                      synchronized (surfaceHolder) {
                         //call methods to draw and process next fame
-                         Log.d(TAG, "XXX ah cumon");
                          gameView.onDraw(c);
                      }
                  } catch(Exception e) {

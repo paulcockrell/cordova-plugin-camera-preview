@@ -773,6 +773,10 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
+        drawThread = new DrawThread(holder, context, this);
+        drawThread.setRunning(true);
+        drawThread.start();
+
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
         try {
@@ -786,6 +790,18 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
+        drawThread.setRunning(false);
+        boolean retry = true;
+        while(retry) {
+            try {
+                drawThread.join();
+                retry = false;
+            }
+            catch(Exception e) {
+                Log.v("Exception Occured", e.getMessage());
+            }
+        }
+
         // Surface will be destroyed when we return, so stop the preview.
         if (mCamera != null) {
             mCamera.stopPreview();
@@ -888,6 +904,8 @@ class TapGestureDetector extends GestureDetector.SimpleOnGestureListener{
 
 class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private final String TAG = "CustomSurfaceView";
+    boolean surfaceExists = false;
+    SurfaceHolder mHolder;
 
     CustomSurfaceView(Context context){
         super(context);
@@ -895,6 +913,10 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        surfaceExists = true;
+        mHolder = holder;
+        DrawTextThread thread = new DrawTextThread();
+        thread.execute(null);
     }
 
     @Override
@@ -903,5 +925,26 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        surfaceExists = false;
+    }
+
+    class DrawTextThread extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object... params) {
+            while(surfaceExists) {
+                Canvas rCanvas = getHolder().lockCanvas();
+                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                paint.setColor(Color.rgb(61,61,61));
+                paint.setTextSize((int) (14 * 2));
+                paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+                Rect bounds = new Rect();
+                String text = textTime;
+                paint.getTextBounds(text, 0, text.length(), bounds);
+                canvas.drawText(text, 10, 10, paint);
+                getHolder().unlockCanvasAndPost(rCanvas);
+            }
+        }
+
     }
 }

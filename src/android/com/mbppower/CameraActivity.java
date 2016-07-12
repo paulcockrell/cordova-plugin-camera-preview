@@ -773,34 +773,30 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
     }
 
-    public boolean simpleDraw(SurfaceHolder mmHolder) {
-        if (mmHolder != null && mmHolder.getSurface().isValid()) {
-            Log.d(TAG, "XXX mmholder is good");
-        }
-        else {
-            Log.d(TAG, "XXX mmholder is bad!");
-        }
-        if (mHolder != null && mHolder.getSurface().isValid()) {
-            try {
-              Log.d(TAG, "XXX great");
-              Canvas canvas = mmHolder.lockCanvas();
-              Paint mPaint = new Paint();
-              mPaint.setColor(Color.GREEN);
-              mPaint.setStrokeWidth(2);
-              canvas.drawCircle(150,150,80,mPaint);
-            }
-            catch(Exception e) {
-              Log.d(TAG, "XXX oh shit muther fucker ");
+    public boolean simpleDraw(SurfaceHolder mHolder) {
+        Canvas canvas;
+        Paint mPaint;
 
-            }
-            finally {
-              if (mmHolder != null) {
-                mmHolder.unlockCanvasAndPost(canvas);
-              }
-            }
+        if (mHolder == null || !mHolder.getSurface().isValid()) {
+            Log.d(TAG, "XXX mmholder is bad");
+            return false;
         }
-        else {
-            Log.d(TAG, "XXX shit");
+
+        try {
+          Log.d(TAG, "XXX great");
+          canvas = mHolder.lockCanvas();
+          mPaint = new Paint();
+          mPaint.setColor(Color.GREEN);
+          mPaint.setStrokeWidth(2);
+          canvas.drawCircle(150,150,80,mPaint);
+        }
+        catch(Exception e) {
+          Log.d(TAG, "XXX NOoooooooooo");
+        }
+        finally {
+          if (mHolder != null) {
+            mHolder.unlockCanvasAndPost(canvas);
+          }
         }
 
         return true;

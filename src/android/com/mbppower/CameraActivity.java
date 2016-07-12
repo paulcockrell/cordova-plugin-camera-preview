@@ -397,7 +397,7 @@ public class CameraActivity extends Fragment {
 
 
                             android.graphics.Bitmap.Config bitmapConfig = pic.getConfig();
-                            Bitmap pic2 = pic.copy(bitmapConfig, true);
+                            final Bitmap pic2 = pic.copy(bitmapConfig, true);
                             Canvas canvas = new Canvas(pic2);
                             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
                             paint.setColor(Color.rgb(61,61,61));

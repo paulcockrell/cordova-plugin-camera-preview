@@ -982,6 +982,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
          @Override
          public void run() {
+             Log.d(TAG, "XXX HELLO???????");
              Canvas c;
              while (run) {
                  c = null;

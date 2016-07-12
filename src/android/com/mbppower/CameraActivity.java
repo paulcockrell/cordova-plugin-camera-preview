@@ -404,7 +404,7 @@ public class CameraActivity extends Fragment {
                             paint.setTextSize((int) (14 * 2));
                             paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
                             Rect bounds = new Rect();
-                            String text = "Hello";
+                            String text = "T1: " + textTime;
                             paint.getTextBounds(text, 0, text.length(), bounds);
                             int x = (pic2.getWidth() - bounds.width())/2;
                             int y = (pic2.getHeight() - bounds.height())/2;

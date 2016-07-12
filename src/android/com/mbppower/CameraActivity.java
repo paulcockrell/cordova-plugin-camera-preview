@@ -254,6 +254,7 @@ public class CameraActivity extends Fragment {
             public void onPreviewFrame(final byte[] data, final Camera camera) {
                 new Thread() {
                     public void run() {
+                        Log.d(TAG, "SSS hello?");
                         //raw picture
                         byte[] bytes = mPreview.getFramePicture(data, camera);
                         final Bitmap pic = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

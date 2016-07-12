@@ -273,57 +273,57 @@ public class CameraActivity extends Fragment {
                         canvas.drawText(text, x, y, paint);
 
                         //scale down
-                        float scale = (float)pictureView.getWidth()/(float)pic2.getWidth();
-                        Bitmap scaledBitmap = Bitmap.createScaledBitmap(pic2, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
+                        //float scale = (float)pictureView.getWidth()/(float)pic2.getWidth();
+                        //Bitmap scaledBitmap = Bitmap.createScaledBitmap(pic2, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
 
-                        final Matrix matrix = new Matrix();
-                        if (cameraCurrentlyLocked == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                            Log.d(TAG, "mirror y axis");
-                            matrix.preScale(-1.0f, 1.0f);
-                        }
-                        Log.d(TAG, "preRotate " + mPreview.getDisplayOrientation() + "deg");
-                        matrix.postRotate(mPreview.getDisplayOrientation());
+                        //final Matrix matrix = new Matrix();
+                        //if (cameraCurrentlyLocked == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                        //    Log.d(TAG, "mirror y axis");
+                        //    matrix.preScale(-1.0f, 1.0f);
+                        //}
+                        //Log.d(TAG, "preRotate " + mPreview.getDisplayOrientation() + "deg");
+                        //matrix.postRotate(mPreview.getDisplayOrientation());
 
-                        final Bitmap fixedPic = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, false);
-                        final Rect rect = new Rect(mPreview.mSurfaceView.getLeft(), mPreview.mSurfaceView.getTop(), mPreview.mSurfaceView.getRight(), mPreview.mSurfaceView.getBottom());
+                        //final Bitmap fixedPic = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, false);
+                        //final Rect rect = new Rect(mPreview.mSurfaceView.getLeft(), mPreview.mSurfaceView.getTop(), mPreview.mSurfaceView.getRight(), mPreview.mSurfaceView.getBottom());
 
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                pictureView.setImageBitmap(fixedPic);
-                                pictureView.layout(rect.left, rect.top, rect.right, rect.bottom);
+                        //getActivity().runOnUiThread(new Runnable() {
+                        //    @Override
+                        //    public void run() {
+                        //        pictureView.setImageBitmap(fixedPic);
+                        //        pictureView.layout(rect.left, rect.top, rect.right, rect.bottom);
 
-                                Bitmap finalPic = null;
-                                // If we are going to rotate the picture, width and height are reversed
-                                boolean swapAspects = mPreview.getDisplayOrientation() % 180 != 0;
-                                double rotatedWidth = swapAspects ? pic2.getHeight() : pic2.getWidth();
-                                double rotatedHeight = swapAspects ? pic2.getWidth() : pic2.getHeight();
-                                boolean shouldScaleWidth = maxWidth > 0 && rotatedWidth > maxWidth;
-                                boolean shouldScaleHeight = maxHeight > 0 && rotatedHeight > maxHeight;
+                        //        Bitmap finalPic = null;
+                        //        // If we are going to rotate the picture, width and height are reversed
+                        //        boolean swapAspects = mPreview.getDisplayOrientation() % 180 != 0;
+                        //        double rotatedWidth = swapAspects ? pic2.getHeight() : pic2.getWidth();
+                        //        double rotatedHeight = swapAspects ? pic2.getWidth() : pic2.getHeight();
+                        //        boolean shouldScaleWidth = maxWidth > 0 && rotatedWidth > maxWidth;
+                        //        boolean shouldScaleHeight = maxHeight > 0 && rotatedHeight > maxHeight;
 
-                                //scale final picture
-                                if (shouldScaleWidth || shouldScaleHeight) {
-                                    double scaleHeight = shouldScaleHeight ? maxHeight / (double)rotatedHeight : 1;
-                                    double scaleWidth = shouldScaleWidth ? maxWidth / (double)rotatedWidth : 1;
+                        //        //scale final picture
+                        //        if (shouldScaleWidth || shouldScaleHeight) {
+                        //            double scaleHeight = shouldScaleHeight ? maxHeight / (double)rotatedHeight : 1;
+                        //            double scaleWidth = shouldScaleWidth ? maxWidth / (double)rotatedWidth : 1;
 
-                                    double scale = scaleHeight < scaleWidth ? scaleHeight : scaleWidth;
-                                    finalPic = Bitmap.createScaledBitmap(pic, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
-                                }
-                                else {
-                                    finalPic = pic2;
-                                }
+                        //            double scale = scaleHeight < scaleWidth ? scaleHeight : scaleWidth;
+                        //            finalPic = Bitmap.createScaledBitmap(pic, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
+                        //        }
+                        //        else {
+                        //            finalPic = pic2;
+                        //        }
 
-                                Bitmap originalPicture = Bitmap.createBitmap(finalPic, 0, 0, (int)(finalPic.getWidth()), (int)(finalPic.getHeight()), matrix, false);
+                        //        Bitmap originalPicture = Bitmap.createBitmap(finalPic, 0, 0, (int)(finalPic.getWidth()), (int)(finalPic.getHeight()), matrix, false);
 
-                                //get bitmap and compress
-                                Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                        //        //get bitmap and compress
+                        //        Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
+                        //        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        //        picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
 
-                                generatePictureFromView(originalPicture, picture);
-                                canTakePicture = true;
-                            }
-                        });
+                        //        generatePictureFromView(originalPicture, picture);
+                        //        canTakePicture = true;
+                        //    }
+                        //});
                     }
                 }.start();
             }

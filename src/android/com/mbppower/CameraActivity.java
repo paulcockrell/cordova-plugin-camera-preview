@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.Color;
 import android.graphics.YuvImage;
 import android.graphics.Paint;
 import android.hardware.Camera;
@@ -405,8 +406,8 @@ public class CameraActivity extends Fragment {
                             Rect bounds = new Rect();
                             String text = "Hello";
                             paint.getTextBounds(text, 0, text.length(), bounds);
-                            int x = (bitmap.getWidth() - bounds.width())/2;
-                            int y = (bitmap.getHeight() - bound.height())/2;
+                            int x = (pic2.getWidth() - bounds.width())/2;
+                            int y = (pic2.getHeight() - bounds.height())/2;
                             canvas.drawText(text, x, y, paint);
 
                             //scale down

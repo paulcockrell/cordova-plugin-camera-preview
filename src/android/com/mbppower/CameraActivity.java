@@ -781,13 +781,23 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
             Log.d(TAG, "XXX mmholder is bad!");
         }
         if (mHolder != null && mHolder.getSurface().isValid()) {
-            Log.d(TAG, "XXX great");
-            Canvas canvas = mmHolder.lockCanvas();
-            Paint mPaint = new Paint();
-            mPaint.setColor(Color.GREEN);
-            mPaint.setStrokeWidth(2);
-            canvas.drawCircle(150,150,80,mPaint);
-            mmHolder.unlockCanvasAndPost(canvas);
+            try {
+              Log.d(TAG, "XXX great");
+              Canvas canvas = mmHolder.lockCanvas();
+              Paint mPaint = new Paint();
+              mPaint.setColor(Color.GREEN);
+              mPaint.setStrokeWidth(2);
+              canvas.drawCircle(150,150,80,mPaint);
+            }
+            catch(Exception e) {
+              Log.d(TAG, "XXX oh shit muther fucker ");
+
+            }
+            finally {
+              if (mmHolder != null) {
+                mmHolder.unlockCanvasAndPost(canvas);
+              }
+            }
         }
         else {
             Log.d(TAG, "XXX shit");

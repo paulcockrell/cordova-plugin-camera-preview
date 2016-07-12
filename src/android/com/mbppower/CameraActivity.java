@@ -773,14 +773,25 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
     }
 
-    private void simpleDraw() {
-        SurfaceHolder gHolder = mSurfaceView.getHolder();
-        Canvas canvas = gHolder.lockCanvas(new Rect(0, 0, 300, 300));
-        Paint mPaint = new Paint();
-        mPaint.setColor(Color.GREEN);
-        mPaint.setStrokeWidth(2);
-        canvas.drawCircle(150,150,80,mPaint);
-        gHolder.unlockCanvasAndPost(canvas);
+    private void simpleDraw(SurfaceHolder mmHolder) {
+        if (mmHolder != null && mmHolder.getSurface().isValid()) {
+            Log.d(TAG, "XXX mmholder is good");
+        }
+        else {
+            Log.d(TAG, "XXX mmholder is bad!");
+        }
+        if (mHolder != null && mHolder.getSurface().isValid()) {
+            Log.d(TAG, "XXX great");
+            Canvas canvas = mHolder.lockCanvas();
+            Paint mPaint = new Paint();
+            mPaint.setColor(Color.GREEN);
+            mPaint.setStrokeWidth(2);
+            canvas.drawCircle(150,150,80,mPaint);
+            mHolder.unlockCanvasAndPost(canvas);
+        }
+        else {
+            Log.d(TAG, "XXX shit");
+        }
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -790,7 +801,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
             if (mCamera != null) {
                 mSurfaceView.setWillNotDraw(false);
                 mCamera.setPreviewDisplay(holder);
-                simpleDraw();
+                simpleDraw(holder);
             }
         } catch (IOException exception) {
             Log.e(TAG, "IOException caused by setPreviewDisplay()", exception);

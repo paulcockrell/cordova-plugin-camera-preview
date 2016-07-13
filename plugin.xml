@@ -42,6 +42,7 @@
     <source-file src="src/android/com/mbppower/CircularCameraActivity.java" target-dir="src/com/mbppower" />
     <source-file src="src/android/com/mbppower/camera_activity.xml" target-dir="res/layout" />
     <source-file src="src/android/com/mbppower/camera_theme.xml" target-dir="res/values" />
+    <source-file src="lib/javacv.jar" target-dir="lib" />
 
   </platform>
 

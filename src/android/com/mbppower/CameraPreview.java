@@ -332,7 +332,7 @@ public class CameraPreview extends CordovaPlugin {
         try {
             String text = args.getString(0);
             fragment.setText(text);
-	}
+	      }
         catch(Exception e) {
             e.printStackTrace();
         }
@@ -347,7 +347,7 @@ public class CameraPreview extends CordovaPlugin {
         try {
             String filePath = args.getString(0);
             fragment.setFilePath(filePath);
-	}
+	      }
         catch(Exception e) {
             e.printStackTrace();
         }

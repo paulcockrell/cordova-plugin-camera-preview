@@ -40,6 +40,7 @@ public final class CircularCameraActivity extends Fragment {
     private PowerManager.WakeLock mWakeLock;
 
     public static final int SECS_TO_BUFFER = 15;
+    public String filePath;
 
     private int sampleAudioRateInHz = 44100;
     private int imageWidth = 320;
@@ -114,6 +115,11 @@ public final class CircularCameraActivity extends Fragment {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public void setFilePath(final String path) {
+        Log.d(TAG, "XXX setFilePath " + path);
+        filePath = path;
     }
 
     private void initLayout() {

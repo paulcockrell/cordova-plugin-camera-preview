@@ -21,11 +21,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class CameraPreview extends CordovaPlugin implements CameraActivity.CameraPreviewListener {
+public class CameraPreview extends CordovaPlugin implements CircularCameraActivity.CameraPreviewListener {
 
     private final String TAG = "CameraPreview";
-    private final String setOnPictureTakenHandlerAction = "setOnPictureTakenHandler";
-    private final String setColorEffectAction = "setColorEffect";
     private final String startCameraAction = "startCamera";
     private final String stopCameraAction = "stopCamera";
     private final String switchCameraAction = "switchCamera";
@@ -45,7 +43,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
         Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
-    private CameraActivity fragment;
+    private CircularCameraActivity fragment;
     private CallbackContext takePictureCallbackContext;
     private int containerViewId = 1;
 
@@ -144,7 +142,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
         if(fragment != null){
             return false;
         }
-        fragment = new CameraActivity();
+        fragment = new CircularCameraActivity();
         fragment.setEventListener(this);
 
         cordova.getActivity().runOnUiThread(new Runnable() {
@@ -201,7 +199,7 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
 
         return true;
     }
-    
+
     private boolean takePicture(final JSONArray args, CallbackContext callbackContext) {
         if (fragment == null) return false;
 

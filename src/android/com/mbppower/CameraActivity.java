@@ -308,7 +308,7 @@ public class CameraActivity extends Fragment {
         }
         cameraCurrentlyLocked = cameraId;
         mCamera.setPreviewCallback(new Camera.PreviewCallback() {
-          /
+            Log.tag(TAG, "Careful now XXX");
         })
     }
 

@@ -57,7 +57,7 @@ public class CameraActivity extends Fragment {
     public FrameLayout frameContainerLayout;
     public TextView metricsView;
 
-    private Preview mPreview;
+    //private Preview mPreview;
     private boolean canTakePicture = true;
 
     private View view;

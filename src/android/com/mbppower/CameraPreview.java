@@ -21,7 +21,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class CameraPreview extends CordovaPlugin implements CircularCameraActivity.CameraPreviewListener {
+//public class CameraPreview extends CordovaPlugin implements CircularCameraActivity.CameraPreviewListener {
+public class CameraPreview extends CordovaPlugin {
 
     private final String TAG = "CameraPreview";
     private final String startCameraAction = "startCamera";

@@ -249,86 +249,6 @@ public class CameraActivity extends Fragment {
                 }
             });
         }
-        mPreview.setOneShotPreviewCallback(new Camera.PreviewCallback() {
-            @Override
-            public void onPreviewFrame(final byte[] data, final Camera camera) {
-                new Thread() {
-                    public void run() {
-                        Log.d(TAG, "SSS hello?");
-                        //raw picture
-                        byte[] bytes = mPreview.getFramePicture(data, camera);
-                        final Bitmap pic = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-                        android.graphics.Bitmap.Config bitmapConfig = pic.getConfig();
-                        final Bitmap pic2 = pic.copy(bitmapConfig, true);
-                        Canvas canvas = new Canvas(pic2);
-                        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                        paint.setColor(Color.rgb(61,61,61));
-                        paint.setTextSize((int) (14 * 2));
-                        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
-                        Rect bounds = new Rect();
-                        String text = textTime;
-                        paint.getTextBounds(text, 0, text.length(), bounds);
-                        int x = (pic2.getWidth() - bounds.width())/2;
-                        int y = (pic2.getHeight() - bounds.height())/2;
-                        canvas.drawText(text, x, y, paint);
-
-                        //scale down
-                        //float scale = (float)pictureView.getWidth()/(float)pic2.getWidth();
-                        //Bitmap scaledBitmap = Bitmap.createScaledBitmap(pic2, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
-
-                        //final Matrix matrix = new Matrix();
-                        //if (cameraCurrentlyLocked == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                        //    Log.d(TAG, "mirror y axis");
-                        //    matrix.preScale(-1.0f, 1.0f);
-                        //}
-                        //Log.d(TAG, "preRotate " + mPreview.getDisplayOrientation() + "deg");
-                        //matrix.postRotate(mPreview.getDisplayOrientation());
-
-                        //final Bitmap fixedPic = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, false);
-                        //final Rect rect = new Rect(mPreview.mSurfaceView.getLeft(), mPreview.mSurfaceView.getTop(), mPreview.mSurfaceView.getRight(), mPreview.mSurfaceView.getBottom());
-
-                        //getActivity().runOnUiThread(new Runnable() {
-                        //    @Override
-                        //    public void run() {
-                        //        pictureView.setImageBitmap(fixedPic);
-                        //        pictureView.layout(rect.left, rect.top, rect.right, rect.bottom);
-
-                        //        Bitmap finalPic = null;
-                        //        // If we are going to rotate the picture, width and height are reversed
-                        //        boolean swapAspects = mPreview.getDisplayOrientation() % 180 != 0;
-                        //        double rotatedWidth = swapAspects ? pic2.getHeight() : pic2.getWidth();
-                        //        double rotatedHeight = swapAspects ? pic2.getWidth() : pic2.getHeight();
-                        //        boolean shouldScaleWidth = maxWidth > 0 && rotatedWidth > maxWidth;
-                        //        boolean shouldScaleHeight = maxHeight > 0 && rotatedHeight > maxHeight;
-
-                        //        //scale final picture
-                        //        if (shouldScaleWidth || shouldScaleHeight) {
-                        //            double scaleHeight = shouldScaleHeight ? maxHeight / (double)rotatedHeight : 1;
-                        //            double scaleWidth = shouldScaleWidth ? maxWidth / (double)rotatedWidth : 1;
-
-                        //            double scale = scaleHeight < scaleWidth ? scaleHeight : scaleWidth;
-                        //            finalPic = Bitmap.createScaledBitmap(pic, (int)(pic2.getWidth()*scale), (int)(pic2.getHeight()*scale), false);
-                        //        }
-                        //        else {
-                        //            finalPic = pic2;
-                        //        }
-
-                        //        Bitmap originalPicture = Bitmap.createBitmap(finalPic, 0, 0, (int)(finalPic.getWidth()), (int)(finalPic.getHeight()), matrix, false);
-
-                        //        //get bitmap and compress
-                        //        Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
-                        //        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        //        picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
-
-                        //        generatePictureFromView(originalPicture, picture);
-                        //        canTakePicture = true;
-                        //    }
-                        //});
-                    }
-                }.start();
-            }
-        });
     }
 
     private void setDefaultCameraId() {
@@ -386,14 +306,10 @@ public class CameraActivity extends Fragment {
         if (cameraParameters != null) {
           mCamera.setParameters(cameraParameters);
         }
-        mCamera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
-            private long timestamp = 0;
-            public synchronized void onPreviewFrame(byte[] data, Camera camera) {
-              Log.v("CameraTest","Time Gap = "+(System.currentTimeMillis()-timestamp));
-              timestamp=System.currentTimeMillis();
-            };
-        });
         cameraCurrentlyLocked = cameraId;
+        mCamera.setPreviewCallback(new Camera.PreviewCallback() {
+          /
+        })
     }
 
     @Override
@@ -611,37 +527,34 @@ public class CameraActivity extends Fragment {
 
     private File getOutputMediaFile(String suffix) {
         File mediaStorageDir = getActivity().getApplicationContext().getFilesDir();
-	Log.d(TAG, "XXX a: Environment.MEDIA_MOUNTED: " + Environment.MEDIA_MOUNTED);
-	Log.d(TAG, "XXX b: Environment.MEDIA_MOUNTED_READ_ONLY: " + Environment.MEDIA_MOUNTED_READ_ONLY);
         if(Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED && Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED_READ_ONLY) {
-	    Log.d(TAG, "XXX setting file to external storage");
             mediaStorageDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getActivity().getApplicationContext().getPackageName() + "/Files");
         }
-	else {
-	    Log.d(TAG, "XXX Uh oh no external storage");
-	}
+	      else {
+	          Log.d(TAG, "XXX Uh oh no external storage");
+	      }
         if (! mediaStorageDir.exists()) {
             if (! mediaStorageDir.mkdirs()) {
-	        Log.d(TAG, "XXX oh shit failed to create the directories man! " + mediaStorageDir.getPath());
+	              Log.d(TAG, "XXX oh shit failed to create the directories man! " + mediaStorageDir.getPath());
                 return null;
             }
-	    else {
-	        Log.d(TAG, "XXX Created the directories man! " + mediaStorageDir.getPath());
-	    }
+	          else {
+	              Log.d(TAG, "XXX Created the directories man! " + mediaStorageDir.getPath());
+	          }
         }
 
         // Create a media file name
         String timeStamp = new SimpleDateFormat("dd_MM_yyyy_HHmm_ss").format(new Date());
         File mediaFile;
         String mImageName = "camerapreview_" + timeStamp + suffix + ".jpg";
-	if (filePath != null) {
-	    Log.d(TAG, "XXX using file 1");
+	      if (filePath != null) {
+	          Log.d(TAG, "XXX using file 1");
             mediaFile = new File(filePath + File.separator + mImageName);
-	}
-	else {
-	    Log.d(TAG, "XXX using file 2");
+	      }
+	      else {
+	          Log.d(TAG, "XXX using file 2");
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
-	}
+	      }
         Log.d(TAG, "XXX file path: " + mediaFile);
         return mediaFile;
     }
@@ -957,6 +870,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
             requestLayout();
             //mCamera.setDisplayOrientation(90);
             mCamera.setParameters(parameters);
+
             mCamera.startPreview();
         }
     }
@@ -980,6 +894,7 @@ class Preview extends RelativeLayout implements SurfaceHolder.Callback {
         }
         return data;
     }
+
     public void setOneShotPreviewCallback(Camera.PreviewCallback callback) {
         if(mCamera != null) {
             mCamera.setOneShotPreviewCallback(callback);
@@ -1006,6 +921,7 @@ class TapGestureDetector extends GestureDetector.SimpleOnGestureListener{
 
 class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private final String TAG = "CustomSurfaceView";
+    SurfaceHolder mHolder;
     GameThread thread;
     //Measure frames per second.
     long now;
@@ -1019,9 +935,15 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     long timePrev = 0;
     long timePrevFrame = 0;
     long timeDelta;
+    private Camera mCamera;
+    private Context context;
 
-    CustomSurfaceView(Context context){
+    CustomSurfaceView(Context context, Camera camera){
         super(context);
+        mCamera = camera;
+        this.context = context;
+        mHolder = getHolder();
+        mHolder.addCallback(this);
     }
 
     @Override
@@ -1033,6 +955,19 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+        try {
+            camera.stopPreview();
+            Size s = camera.getParameters().getPreviewSize();
+            LayoutParams params = surface.getLayoutParams();
+            params.height = w*s.width/s.height; // portrait mode only
+            surface.setLayoutParams(params);
+            camera.setPreviewDisplay(sh);
+            camera.setPreviewCallback(this);
+            camera.startPreview();
+        } catch (Exception ex) {
+            showException(ex);
+        }
     }
 
     @Override

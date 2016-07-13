@@ -112,6 +112,7 @@ public class CameraActivity extends Fragment {
     //    }
     //}
 
+/*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         appResourcesPackage = getActivity().getPackageName();
@@ -1034,6 +1035,7 @@ class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
              }
          }
     }
+*/
 }
 /* Delete me
 *    class DrawTextThread extends AsyncTask {
